@@ -19,7 +19,10 @@
 - Obsidian 내부 알림과 선택적 운영체제 알림
 - 간격, 알림 시각, 확인 주기 설정
 - 학습 상태를 플러그인 내부에 저장해 노트 속성을 깔끔하게 유지
-- 데스크톱과 모바일에서 사용할 수 있는 Obsidian API만 사용
+- 복습 노트의 다음 일정을 전용 Google Calendar에 생성·갱신·삭제
+- Google Calendar 일정에서 Obsidian 노트 바로 열기
+- 별도 서버 없이 macOS·Windows·Linux 데스크톱을 동기화 에이전트로 사용
+- 기본 복습 기능은 데스크톱과 모바일에서 모두 사용
 
 ## 개발 및 빌드
 
@@ -51,6 +54,20 @@ Obsidian의 **Settings → Community plugins**에서 `Ebbinghaus Review`를 켭�
 
 복습 일정과 진행 이력은 플러그인의 내부 데이터에 저장되므로 노트에 별도 속성이 추가되지 않습니다. 0.4.x 이하 버전에서 만든 `ebbinghaus_review_*` 속성은 플러그인 업데이트 시 내부 저장소로 자동 이전된 후 노트에서 제거됩니다. 노트를 이동하거나 이름을 바꾸면 내부 기록도 함께 갱신됩니다.
 
+## Google Calendar 연동
+
+Google Calendar 연동은 외부 서버 없이 데스크톱 Obsidian이 직접 수행합니다.
+
+1. Google Cloud Console에서 프로젝트를 만들고 **Google Calendar API**를 사용 설정합니다.
+2. OAuth 동의 화면을 구성한 뒤 OAuth 클라이언트를 **데스크톱 앱** 유형으로 만듭니다.
+3. Obsidian의 **설정 → Ebbinghaus Review**에서 클라이언트 ID를 입력합니다. 클라이언트 보안 비밀은 필요하지 않습니다.
+4. **계정 연결**을 누르고 브라우저에서 Google 계정 접근을 허용합니다.
+5. 생성된 `Obsidian 복습` 캘린더의 모바일 알림을 Google Calendar 앱에서 허용합니다.
+
+플러그인은 진행 중인 각 노트의 **다음 복습 일정 한 건**만 유지합니다. 복습 완료, 하루 미루기, 완료 취소, 노트 이동·삭제가 발생하면 일정도 자동으로 갱신됩니다. OAuth 갱신 토큰은 Obsidian `SecretStorage`에 저장되며 노트나 플러그인 `data.json`에는 기록되지 않습니다.
+
+모바일에서는 복습 기능을 그대로 사용할 수 있고 Google Calendar 알림도 받을 수 있습니다. 모바일에서 변경한 복습 기록은 Obsidian Sync가 데스크톱에 전달하고, 해당 데스크톱에서 Obsidian이 실행되면 Google Calendar에 반영됩니다. 따라서 데스크톱이 계속 켜져 있을 필요는 없지만, 모바일 변경 직후 즉시 반영되려면 데스크톱 Obsidian이 한 번 실행되어야 합니다.
+
 ## 명령
 
 - `현재 노트 복습 일정 시작 또는 재시작`
@@ -62,6 +79,9 @@ Obsidian의 **Settings → Community plugins**에서 `Ebbinghaus Review`를 켭�
 - `학습 대시보드 열기`
 - `학습 통계 화면 열기`
 - `놓친 복습 목록 열기`
+- `Google Calendar 계정 연결`
+- `Google Calendar 지금 동기화`
+- `Google Calendar 계정 연결 해제`
 
 ## 알림 동작
 

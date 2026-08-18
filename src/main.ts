@@ -1,6 +1,7 @@
 import {
   App,
   Notice,
+  Platform,
   Plugin,
   PluginSettingTab,
   Setting,
@@ -41,6 +42,10 @@ import {
   readLegacySchedule,
   type StoredReviewSchedule,
 } from "./review-storage";
+import { GoogleCalendarApi } from "./google-calendar-api";
+import { buildGoogleCalendarEvent } from "./google-calendar-model";
+import { authorizeGoogleCalendarDesktop } from "./google-oauth";
+
 interface EbbinghausReviewSettings {
   intervals: string;
   /** Kept only to locate and remove properties written by versions before 0.5.0. */
@@ -54,6 +59,12 @@ interface EbbinghausReviewSettings {
   reviewLog: ReviewActivityEntry[];
   undoSnapshots: Record<string, CompletionUndoSnapshot>;
   schedules: Record<string, StoredReviewSchedule>;
+  googleOAuthClientId: string;
+  googleCalendarId: string;
+  googleCalendarName: string;
+  googleReviewTime: string;
+  googleReminderMinutes: number;
+  googleLastSyncAt: string;
 }
 
 interface CompletionUndoSnapshot {
@@ -118,7 +129,15 @@ const DEFAULT_SETTINGS: EbbinghausReviewSettings = {
   reviewLog: [],
   undoSnapshots: {},
   schedules: {},
+  googleOAuthClientId: "",
+  googleCalendarId: "",
+  googleCalendarName: "Obsidian 복습",
+  googleReviewTime: "09:00",
+  googleReminderMinutes: 0,
+  googleLastSyncAt: "",
 };
+
+const GOOGLE_REFRESH_TOKEN_SECRET_ID = "ebbinghaus-review-google-refresh-token";
 
 function isCompletionUndoSnapshot(value: unknown): value is CompletionUndoSnapshot {
   if (!value || typeof value !== "object") return false;
@@ -149,6 +168,9 @@ export default class EbbinghausReviewPlugin extends Plugin {
   private checkIntervalId: number | null = null;
   private restoringStatusView = false;
   private isUnloading = false;
+  private googleSyncTimerId: number | null = null;
+  private googleSyncPromise: Promise<void> | null = null;
+  private lastGoogleSyncErrorNoticeAt = 0;
 
   async onload(): Promise<void> {
     await this.loadSettings();
@@ -234,6 +256,24 @@ export default class EbbinghausReviewPlugin extends Plugin {
       callback: () => void this.activateDashboard("overdue"),
     });
 
+    this.addCommand({
+      id: "connect-google-calendar",
+      name: "Google Calendar 계정 연결",
+      callback: () => void this.withNoticeErrors(() => this.connectGoogleCalendar()),
+    });
+
+    this.addCommand({
+      id: "sync-google-calendar",
+      name: "Google Calendar 지금 동기화",
+      callback: () => void this.withNoticeErrors(() => this.syncGoogleCalendar(true)),
+    });
+
+    this.addCommand({
+      id: "disconnect-google-calendar",
+      name: "Google Calendar 계정 연결 해제",
+      callback: () => void this.withNoticeErrors(() => this.disconnectGoogleCalendar()),
+    });
+
     this.addSettingTab(new EbbinghausReviewSettingTab(this.app, this));
 
     this.updateCheckInterval();
@@ -258,6 +298,7 @@ export default class EbbinghausReviewPlugin extends Plugin {
 
   onunload(): void {
     this.isUnloading = true;
+    if (this.googleSyncTimerId !== null) window.clearTimeout(this.googleSyncTimerId);
     this.app.workspace.detachLeavesOfType(REVIEW_STATUS_VIEW_TYPE);
     this.app.workspace.detachLeavesOfType(REVIEW_DASHBOARD_VIEW_TYPE);
   }
@@ -345,6 +386,7 @@ export default class EbbinghausReviewPlugin extends Plugin {
     };
     delete this.settings.undoSnapshots[file.path];
     await this.saveSettings();
+    this.queueGoogleCalendarSync();
     new Notice(`복습 일정을 시작했습니다. 첫 복습일: ${nextDate}`);
     await this.refreshStatus();
     await this.activateStatusView();
@@ -394,6 +436,7 @@ export default class EbbinghausReviewPlugin extends Plugin {
     });
     this.settings.reviewLog = deduplicateActivity(this.settings.reviewLog);
     await this.saveSettings();
+    this.queueGoogleCalendarSync();
     new Notice(resultMessage);
     await this.refreshStatus();
   }
@@ -407,6 +450,7 @@ export default class EbbinghausReviewPlugin extends Plugin {
     this.settings.schedules[file.path] = { ...schedule, nextDate: tomorrow };
     delete this.settings.undoSnapshots[file.path];
     await this.saveSettings();
+    this.queueGoogleCalendarSync();
     new Notice(`복습을 ${tomorrow}로 미뤘습니다.`);
     await this.refreshStatus();
   }
@@ -451,6 +495,7 @@ export default class EbbinghausReviewPlugin extends Plugin {
     }
     delete this.settings.undoSnapshots[file.path];
     await this.saveSettings();
+    this.queueGoogleCalendarSync();
     new Notice(`복습 완료를 취소했습니다: ${file.basename}`);
     await this.refreshStatus();
   }
@@ -651,6 +696,133 @@ export default class EbbinghausReviewPlugin extends Plugin {
     await this.refreshStatus();
     if (this.settings.keepStatusPanelOpen) await this.ensureStatusView(true);
     if (this.settings.notifyOnStartup) await this.checkAndNotify(true);
+    this.queueGoogleCalendarSync();
+  }
+
+  isGoogleCalendarConnected(): boolean {
+    return Platform.isDesktopApp &&
+      this.settings.googleOAuthClientId.endsWith(".apps.googleusercontent.com") &&
+      Boolean(this.app.secretStorage.getSecret(GOOGLE_REFRESH_TOKEN_SECRET_ID));
+  }
+
+  async connectGoogleCalendar(): Promise<void> {
+    if (!Platform.isDesktopApp) {
+      throw new Error("Google Calendar 계정 연결은 macOS, Windows, Linux 데스크톱에서 진행하세요.");
+    }
+    const clientId = this.settings.googleOAuthClientId.trim();
+    if (!clientId.endsWith(".apps.googleusercontent.com")) {
+      throw new Error("설정에 Google OAuth 데스크톱 클라이언트 ID를 먼저 입력하세요.");
+    }
+
+    const tokens = await authorizeGoogleCalendarDesktop(clientId);
+    this.app.secretStorage.setSecret(GOOGLE_REFRESH_TOKEN_SECRET_ID, tokens.refreshToken);
+    await this.syncGoogleCalendar(false);
+    new Notice("Google Calendar 연결과 첫 동기화를 완료했습니다.");
+  }
+
+  async disconnectGoogleCalendar(): Promise<void> {
+    if (!Platform.isDesktopApp) {
+      throw new Error("Google Calendar 연결 해제는 연결한 데스크톱에서 진행하세요.");
+    }
+    const refreshToken = this.app.secretStorage.getSecret(GOOGLE_REFRESH_TOKEN_SECRET_ID);
+    if (!refreshToken) {
+      new Notice("연결된 Google Calendar 계정이 없습니다.");
+      return;
+    }
+
+    const clientId = this.settings.googleOAuthClientId.trim();
+    if (clientId) {
+      await new GoogleCalendarApi(clientId, refreshToken).revoke();
+    }
+    this.app.secretStorage.setSecret(GOOGLE_REFRESH_TOKEN_SECRET_ID, "");
+    new Notice("Google Calendar 계정 연결을 해제했습니다. 기존 캘린더와 일정은 유지됩니다.");
+  }
+
+  async syncGoogleCalendar(showNotice: boolean): Promise<void> {
+    if (!Platform.isDesktopApp) {
+      if (showNotice) throw new Error("Google Calendar 동기화는 데스크톱에서 실행됩니다.");
+      return;
+    }
+    const clientId = this.settings.googleOAuthClientId.trim();
+    const refreshToken = this.app.secretStorage.getSecret(GOOGLE_REFRESH_TOKEN_SECRET_ID);
+    if (!clientId.endsWith(".apps.googleusercontent.com") || !refreshToken) {
+      if (showNotice) throw new Error("설정에서 Google Calendar 계정을 먼저 연결하세요.");
+      return;
+    }
+    if (this.googleSyncPromise) {
+      await this.googleSyncPromise;
+      if (showNotice) new Notice("Google Calendar 동기화를 완료했습니다.");
+      return;
+    }
+
+    let resultMessage = "";
+    this.googleSyncPromise = (async () => {
+      const api = new GoogleCalendarApi(clientId, refreshToken);
+      const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC";
+      const calendarId = await api.ensureCalendar(
+        this.settings.googleCalendarId,
+        this.settings.googleCalendarName,
+        timeZone,
+      );
+      if (calendarId !== this.settings.googleCalendarId) {
+        this.settings.googleCalendarId = calendarId;
+        await this.saveSettings();
+      }
+
+      const desiredEvents = await Promise.all(
+        Object.entries(this.settings.schedules).flatMap(([path, schedule]) => {
+          if (!schedule.enabled || !schedule.nextDate) return [];
+          const file = this.app.vault.getAbstractFileByPath(path);
+          if (!(file instanceof TFile) || file.extension !== "md") return [];
+          return [buildGoogleCalendarEvent({
+            vaultName: this.app.vault.getName(),
+            filePath: file.path,
+            basename: file.basename,
+            nextDate: schedule.nextDate,
+            reviewTime: this.settings.googleReviewTime,
+            timeZone,
+            reminderMinutes: this.settings.googleReminderMinutes,
+            stage: schedule.stage,
+            totalStages: this.intervals.length,
+          })];
+        }),
+      );
+      const result = await api.syncEvents(calendarId, desiredEvents);
+      this.settings.googleLastSyncAt = new Date().toISOString();
+      await this.saveSettings();
+      resultMessage = `Google Calendar 동기화 완료 · 생성 ${result.created}, 갱신 ${result.updated}, 삭제 ${result.deleted}`;
+    })();
+
+    try {
+      await this.googleSyncPromise;
+      if (showNotice) new Notice(resultMessage);
+    } finally {
+      this.googleSyncPromise = null;
+    }
+  }
+
+  queueGoogleCalendarSync(): void {
+    if (!this.isGoogleCalendarConnected()) return;
+    if (this.googleSyncTimerId !== null) window.clearTimeout(this.googleSyncTimerId);
+    this.googleSyncTimerId = window.setTimeout(() => {
+      this.googleSyncTimerId = null;
+      void this.syncGoogleCalendar(false).catch((error) => {
+        console.error("Ebbinghaus Review Google Calendar sync failed", error);
+        const now = Date.now();
+        if (now - this.lastGoogleSyncErrorNoticeAt >= 60 * 60 * 1000) {
+          this.lastGoogleSyncErrorNoticeAt = now;
+          const message = error instanceof Error ? error.message : String(error);
+          new Notice(`Google Calendar 자동 동기화 실패: ${message}`);
+        }
+      });
+    }, 1500);
+  }
+
+  async onExternalSettingsChange(): Promise<void> {
+    await this.loadSettings();
+    this.updateCheckInterval();
+    await this.refreshStatus();
+    this.queueGoogleCalendarSync();
   }
 
   async migrateLegacySchedules(): Promise<{ imported: number; cleaned: number }> {
@@ -713,6 +885,7 @@ export default class EbbinghausReviewPlugin extends Plugin {
     });
 
     if (changed) await this.saveSettings();
+    if (changed) this.queueGoogleCalendarSync();
     await this.refreshStatus();
   }
 
@@ -731,6 +904,7 @@ export default class EbbinghausReviewPlugin extends Plugin {
       changed = true;
     }
     if (changed) await this.saveSettings();
+    if (changed) this.queueGoogleCalendarSync();
     await this.refreshStatus();
   }
 
@@ -764,6 +938,26 @@ export default class EbbinghausReviewPlugin extends Plugin {
       loaded.propertyPrefix.trim().length > 0
       ? loaded.propertyPrefix
       : DEFAULT_SETTINGS.propertyPrefix;
+    this.settings.googleOAuthClientId = typeof loaded?.googleOAuthClientId === "string"
+      ? loaded.googleOAuthClientId.trim()
+      : DEFAULT_SETTINGS.googleOAuthClientId;
+    this.settings.googleCalendarId = typeof loaded?.googleCalendarId === "string"
+      ? loaded.googleCalendarId
+      : DEFAULT_SETTINGS.googleCalendarId;
+    this.settings.googleCalendarName = typeof loaded?.googleCalendarName === "string" &&
+      loaded.googleCalendarName.trim().length > 0
+      ? loaded.googleCalendarName.trim()
+      : DEFAULT_SETTINGS.googleCalendarName;
+    this.settings.googleReviewTime = /^([01]\d|2[0-3]):[0-5]\d$/.test(loaded?.googleReviewTime ?? "")
+      ? loaded!.googleReviewTime!
+      : DEFAULT_SETTINGS.googleReviewTime;
+    this.settings.googleReminderMinutes = Number.isSafeInteger(loaded?.googleReminderMinutes) &&
+      Number(loaded?.googleReminderMinutes) >= 0 && Number(loaded?.googleReminderMinutes) <= 40320
+      ? Number(loaded?.googleReminderMinutes)
+      : DEFAULT_SETTINGS.googleReminderMinutes;
+    this.settings.googleLastSyncAt = typeof loaded?.googleLastSyncAt === "string"
+      ? loaded.googleLastSyncAt
+      : DEFAULT_SETTINGS.googleLastSyncAt;
   }
 
   async saveSettings(): Promise<void> {
@@ -913,5 +1107,87 @@ class EbbinghausReviewSettingTab extends PluginSettingTab {
         }),
       );
 
+    this.containerEl.createEl("h3", { text: "Google Calendar 연동" });
+    this.containerEl.createEl("p", {
+      cls: "setting-item-description",
+      text: Platform.isDesktopApp
+        ? "외부 서버 없이 이 데스크톱이 복습 일정을 Google Calendar에 동기화합니다."
+        : "계정 연결과 동기화는 데스크톱에서 실행됩니다. 동기화된 일정 알림은 모바일 Google Calendar 앱에서도 받을 수 있습니다.",
+    });
+
+    new Setting(this.containerEl)
+      .setName("OAuth 데스크톱 클라이언트 ID")
+      .setDesc("Google Cloud에서 만든 '데스크톱 앱' 유형의 클라이언트 ID입니다. 클라이언트 보안 비밀은 입력하지 않습니다.")
+      .addText((text) => {
+        text.setPlaceholder("…apps.googleusercontent.com");
+        text.setValue(this.plugin.settings.googleOAuthClientId).onChange(async (value) => {
+          this.plugin.settings.googleOAuthClientId = value.trim();
+          await this.plugin.saveSettings();
+        });
+        text.inputEl.disabled = !Platform.isDesktopApp;
+      });
+
+    new Setting(this.containerEl)
+      .setName("복습 일정 시각")
+      .setDesc("Google Calendar에 생성할 15분짜리 복습 일정의 시작 시각입니다.")
+      .addText((text) => {
+        text.inputEl.type = "time";
+        text.setValue(this.plugin.settings.googleReviewTime).onChange(async (value) => {
+          if (!/^([01]\d|2[0-3]):[0-5]\d$/.test(value)) return;
+          this.plugin.settings.googleReviewTime = value;
+          await this.plugin.saveSettings();
+          this.plugin.queueGoogleCalendarSync();
+        });
+      });
+
+    new Setting(this.containerEl)
+      .setName("미리 알림")
+      .setDesc("일정 시작 몇 분 전에 Google Calendar 알림을 받을지 설정합니다. 0은 시작 시각입니다.")
+      .addText((text) => {
+        text.inputEl.type = "number";
+        text.inputEl.min = "0";
+        text.inputEl.max = "40320";
+        text.setValue(String(this.plugin.settings.googleReminderMinutes)).onChange(async (value) => {
+          const minutes = Number(value);
+          if (!Number.isSafeInteger(minutes) || minutes < 0 || minutes > 40320) return;
+          this.plugin.settings.googleReminderMinutes = minutes;
+          await this.plugin.saveSettings();
+          this.plugin.queueGoogleCalendarSync();
+        });
+      });
+
+    const connected = this.plugin.isGoogleCalendarConnected();
+    const lastSync = this.plugin.settings.googleLastSyncAt
+      ? new Date(this.plugin.settings.googleLastSyncAt).toLocaleString("ko-KR")
+      : "아직 동기화하지 않음";
+    new Setting(this.containerEl)
+      .setName(connected ? "Google Calendar 연결됨" : "Google Calendar 연결 안 됨")
+      .setDesc(`마지막 동기화: ${lastSync}`)
+      .addButton((button) => {
+        button.setButtonText(connected ? "다시 연결" : "계정 연결");
+        button.setCta();
+        button.setDisabled(!Platform.isDesktopApp);
+        button.onClick(async () => {
+          await this.plugin.withNoticeErrors(() => this.plugin.connectGoogleCalendar());
+          this.display();
+        });
+      })
+      .addButton((button) => {
+        button.setButtonText("지금 동기화");
+        button.setDisabled(!connected);
+        button.onClick(async () => {
+          await this.plugin.withNoticeErrors(() => this.plugin.syncGoogleCalendar(true));
+          this.display();
+        });
+      })
+      .addButton((button) => {
+        button.setButtonText("연결 해제");
+        button.setWarning();
+        button.setDisabled(!connected);
+        button.onClick(async () => {
+          await this.plugin.withNoticeErrors(() => this.plugin.disconnectGoogleCalendar());
+          this.display();
+        });
+      });
   }
 }
