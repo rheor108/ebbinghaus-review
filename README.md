@@ -1,5 +1,58 @@
 # Ebbinghaus Review for Obsidian
 
+[English](#english) · [한국어](#한국어)
+
+## English
+
+Schedule spaced reviews for each note, see what is due today or overdue, and track your learning progress without adding properties to the top of your notes.
+
+> The default intervals are a practical spaced-repetition preset. They do not claim to reproduce Ebbinghaus's experimental results exactly for every learner. You can customize the intervals in settings.
+
+### Highlights
+
+- Start a configurable `1, 3, 7, 14, 30, 60, 120 day` review schedule for any note.
+- Review today's notes, overdue notes, progress, and seven-day activity from a dedicated dashboard.
+- Mark a review complete, postpone it until tomorrow, or undo an accidental completion.
+- Keep review data in plugin storage so note properties stay clean.
+- Receive in-app and optional operating-system notifications.
+- Use the same plugin on desktop and mobile.
+- Automatically match Obsidian's interface language across all 46 completed app locales; unknown future locales fall back to English.
+
+### Screenshots
+
+#### Dashboard and current-note status
+
+![Study dashboard and current-note review status](docs/images/review-status.png)
+
+#### Study statistics
+
+![Ebbinghaus Review study statistics](docs/images/review-statistics.png)
+
+### Language support
+
+The plugin uses Obsidian's official `getLanguage()` API and bundles translations for every locale marked as complete for the app in the [official Obsidian translations repository](https://github.com/obsidianmd/obsidian-translations#existing-languages). No network connection is needed for translation. English is used as a safe fallback for newly added or unknown locales.
+
+### Usage
+
+1. Open a Markdown note.
+2. Run **Start or restart the review schedule for the current note** from the command palette.
+3. Use the status bar or ribbon icons to open the current-note panel and study dashboard.
+4. Select **Mark reviewed** after studying, or postpone the review until tomorrow.
+5. Check the **Study statistics** tab for your streak and recent activity.
+
+### Development
+
+Requires Obsidian 1.8.7 or later.
+
+```bash
+npm install
+npm run check
+```
+
+Copy `main.js`, `manifest.json`, and `styles.css` into a test vault's `.obsidian/plugins/ebbinghaus-review/` directory, then enable **Ebbinghaus Review** under **Settings → Community plugins**.
+
+# 한국어
+
 노트마다 에빙하우스식 간격 복습 일정을 기록하고, 오늘 복습할 노트를 Obsidian 안에서 알려주는 플러그인입니다.
 
 > 이 플러그인의 기본 간격은 실용적인 간격 반복 프리셋이며, 에빙하우스의 실험 결과를 개인별로 정확히 재현하는 의학적·과학적 모델은 아닙니다. 설정에서 간격을 자유롭게 바꿀 수 있습니다.
@@ -34,8 +87,11 @@
 - 간격, 알림 시각, 확인 주기 설정
 - 학습 상태를 플러그인 내부에 저장해 노트 속성을 깔끔하게 유지
 - 데스크톱과 모바일에서 사용할 수 있는 Obsidian API만 사용
+- Obsidian에서 앱 번역이 완료된 46개 언어를 자동 감지하고, 알 수 없는 새 언어는 영어로 표시
 
 ## 개발 및 빌드
+
+Obsidian 1.8.7 이상이 필요합니다.
 
 ```bash
 npm install

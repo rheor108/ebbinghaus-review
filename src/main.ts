@@ -1,5 +1,6 @@
 import {
   App,
+  getLanguage,
   Notice,
   Plugin,
   PluginSettingTab,
@@ -41,6 +42,7 @@ import {
   readLegacySchedule,
   type StoredReviewSchedule,
 } from "./review-storage";
+import { createI18n, type I18n } from "./i18n";
 interface EbbinghausReviewSettings {
   intervals: string;
   /** Kept only to locate and remove properties written by versions before 0.5.0. */
@@ -144,6 +146,7 @@ function isCompletionUndoSnapshot(value: unknown): value is CompletionUndoSnapsh
 
 export default class EbbinghausReviewPlugin extends Plugin {
   settings: EbbinghausReviewSettings = DEFAULT_SETTINGS;
+  readonly i18n: I18n = createI18n(getLanguage());
   private dueStatusBar: HTMLElement | null = null;
   private noteStatusBar: HTMLElement | null = null;
   private checkIntervalId: number | null = null;
@@ -164,73 +167,73 @@ export default class EbbinghausReviewPlugin extends Plugin {
 
     this.dueStatusBar = this.addStatusBarItem();
     this.dueStatusBar.addClass("ebbinghaus-review-status");
-    this.dueStatusBar.setAttribute("aria-label", "오늘 복습 목록 열기");
+    this.dueStatusBar.setAttribute("aria-label", this.i18n.t("openTodayReviewsA11y"));
     this.dueStatusBar.addEventListener("click", () => this.openDueReviews());
 
     this.noteStatusBar = this.addStatusBarItem();
     this.noteStatusBar.addClass("ebbinghaus-review-status", "ebbinghaus-note-status");
-    this.noteStatusBar.setAttribute("aria-label", "현재 노트 복습 현황 열기");
+    this.noteStatusBar.setAttribute("aria-label", this.i18n.t("openStatusA11y"));
     this.noteStatusBar.addEventListener("click", () => void this.activateStatusView());
 
-    this.addRibbonIcon("calendar-clock", "오늘 복습 목록", () => {
+    this.addRibbonIcon("calendar-clock", this.i18n.t("todayReviewList"), () => {
       this.openDueReviews();
     });
 
-    this.addRibbonIcon("chart-no-axes-column-increasing", "현재 노트 복습 현황", () => {
+    this.addRibbonIcon("chart-no-axes-column-increasing", this.i18n.t("currentReviewStatus"), () => {
       void this.activateStatusView();
     });
 
     this.addCommand({
       id: "start-review-schedule",
-      name: "현재 노트 복습 일정 시작 또는 재시작",
+      name: this.i18n.t("commandStartRestart"),
       callback: () => void this.startScheduleForActiveFile(),
     });
 
     this.addCommand({
       id: "mark-current-note-reviewed",
-      name: "현재 노트를 복습 완료로 기록",
+      name: this.i18n.t("commandMarkReviewed"),
       callback: () => void this.completeActiveReview(),
     });
 
     this.addCommand({
       id: "undo-current-note-review",
-      name: "현재 노트의 마지막 복습 완료 취소",
+      name: this.i18n.t("commandUndo"),
       callback: () => void this.undoActiveReview(),
     });
 
     this.addCommand({
       id: "snooze-current-note-one-day",
-      name: "현재 노트 복습을 내일로 미루기",
+      name: this.i18n.t("commandSnooze"),
       callback: () => void this.snoozeActiveReview(),
     });
 
     this.addCommand({
       id: "open-due-reviews",
-      name: "오늘 복습 목록 열기",
+      name: this.i18n.t("commandOpenToday"),
       callback: () => this.openDueReviews(),
     });
 
     this.addCommand({
       id: "open-review-status",
-      name: "현재 노트 복습 현황 패널 열기",
+      name: this.i18n.t("commandOpenStatus"),
       callback: () => void this.activateStatusView(),
     });
 
     this.addCommand({
       id: "open-study-statistics",
-      name: "학습 통계 화면 열기",
+      name: this.i18n.t("commandOpenStats"),
       callback: () => void this.activateDashboard("statistics"),
     });
 
     this.addCommand({
       id: "open-study-dashboard",
-      name: "학습 대시보드 열기",
+      name: this.i18n.t("commandOpenDashboard"),
       callback: () => void this.activateDashboard("today"),
     });
 
     this.addCommand({
       id: "open-overdue-reviews",
-      name: "놓친 복습 목록 열기",
+      name: this.i18n.t("commandOpenOverdue"),
       callback: () => void this.activateDashboard("overdue"),
     });
 
@@ -345,7 +348,7 @@ export default class EbbinghausReviewPlugin extends Plugin {
     };
     delete this.settings.undoSnapshots[file.path];
     await this.saveSettings();
-    new Notice(`복습 일정을 시작했습니다. 첫 복습일: ${nextDate}`);
+    new Notice(this.i18n.t("scheduleStartedNotice", { date: nextDate }));
     await this.refreshStatus();
     await this.activateStatusView();
   }
@@ -353,9 +356,9 @@ export default class EbbinghausReviewPlugin extends Plugin {
   async completeReview(file: TFile, now = new Date()): Promise<void> {
     const schedule = this.settings.schedules[file.path];
     if (!schedule?.enabled) {
-      throw new Error("이 노트에는 진행 중인 복습 일정이 없습니다.");
+      throw new Error(this.i18n.t("noActiveSchedule"));
     }
-    let resultMessage = "복습 완료를 기록했습니다.";
+    let resultMessage = this.i18n.t("reviewRecorded");
     const completedDate = toDateKey(now);
     const stage = schedule.stage;
     const next = advanceSchedule(now, stage, this.intervals);
@@ -385,8 +388,8 @@ export default class EbbinghausReviewPlugin extends Plugin {
       history,
     };
     resultMessage = next.completed
-      ? "모든 복습 단계를 완료했습니다."
-      : `복습 완료를 기록했습니다. 다음 복습일: ${next.nextDate}`;
+      ? this.i18n.t("allStagesCompleted")
+      : this.i18n.t("reviewRecordedNext", { date: next.nextDate ?? "" });
     this.settings.reviewLog.push({
       date: completedDate,
       filePath: file.path,
@@ -401,13 +404,13 @@ export default class EbbinghausReviewPlugin extends Plugin {
   async snoozeReview(file: TFile, now = new Date()): Promise<void> {
     const schedule = this.settings.schedules[file.path];
     if (!schedule?.enabled) {
-      throw new Error("이 노트에는 진행 중인 복습 일정이 없습니다.");
+      throw new Error(this.i18n.t("noActiveSchedule"));
     }
     const tomorrow = toDateKey(addDays(now, 1));
     this.settings.schedules[file.path] = { ...schedule, nextDate: tomorrow };
     delete this.settings.undoSnapshots[file.path];
     await this.saveSettings();
-    new Notice(`복습을 ${tomorrow}로 미뤘습니다.`);
+    new Notice(this.i18n.t("reviewPostponed", { date: tomorrow }));
     await this.refreshStatus();
   }
 
@@ -426,11 +429,11 @@ export default class EbbinghausReviewPlugin extends Plugin {
 
   async undoReview(file: TFile): Promise<void> {
     const snapshot = this.settings.undoSnapshots[file.path];
-    if (!snapshot) throw new Error("취소할 복습 완료 기록이 없습니다.");
+    if (!snapshot) throw new Error(this.i18n.t("noUndoRecord"));
     const schedule = this.settings.schedules[file.path];
     if (!schedule || schedule.stage !== snapshot.stage + 1 ||
       schedule.lastDate !== snapshot.completedDate) {
-      throw new Error("복습 완료 후 일정이 변경되어 자동으로 취소할 수 없습니다.");
+      throw new Error(this.i18n.t("cannotUndoChanged"));
     }
 
     this.settings.schedules[file.path] = {
@@ -451,7 +454,7 @@ export default class EbbinghausReviewPlugin extends Plugin {
     }
     delete this.settings.undoSnapshots[file.path];
     await this.saveSettings();
-    new Notice(`복습 완료를 취소했습니다: ${file.basename}`);
+    new Notice(this.i18n.t("reviewUndoNotice", { note: file.basename }));
     await this.refreshStatus();
   }
 
@@ -531,30 +534,37 @@ export default class EbbinghausReviewPlugin extends Plugin {
   async refreshStatus(): Promise<void> {
     const todayCount = this.getReviewsDueToday().length;
     const overdueCount = this.getOverdueReviews().length;
-    this.dueStatusBar?.setText(`오늘 ${todayCount} · 놓침 ${overdueCount}`);
+    this.dueStatusBar?.setText(this.i18n.t("dueCounts", {
+      today: todayCount,
+      overdue: overdueCount,
+    }));
 
     const file = this.getActiveMarkdownFile();
     if (!file) {
-      this.noteStatusBar?.setText("복습: 노트 없음");
+      this.noteStatusBar?.setText(this.i18n.t("noNoteStatusBar"));
     } else {
       const state = this.getReviewState(file);
       if (state.status === "active") {
         const timing = state.daysUntilNext === 0
-          ? "오늘"
+          ? this.i18n.t("today")
           : state.daysUntilNext !== null && state.daysUntilNext > 0
             ? `D-${state.daysUntilNext}`
             : state.daysUntilNext !== null
-              ? `${Math.abs(state.daysUntilNext)}일 지남`
-              : "날짜 없음";
+              ? this.i18n.t("daysOverdue", { count: Math.abs(state.daysUntilNext) })
+              : this.i18n.t("noDate");
         this.noteStatusBar?.setText(
-          `복습 ${state.completedCount}/${state.totalStages} · ${timing}`,
+          this.i18n.t("reviewStatusBar", {
+            completed: state.completedCount,
+            total: state.totalStages,
+            timing,
+          }),
         );
       } else if (state.status === "completed") {
-        this.noteStatusBar?.setText("복습 전체 완료");
+        this.noteStatusBar?.setText(this.i18n.t("reviewAllCompleteStatus"));
       } else if (state.status === "paused") {
-        this.noteStatusBar?.setText("복습 일정 중지");
+        this.noteStatusBar?.setText(this.i18n.t("reviewPausedStatus"));
       } else {
-        this.noteStatusBar?.setText("복습 일정 없음");
+        this.noteStatusBar?.setText(this.i18n.t("reviewNoScheduleStatus"));
       }
     }
 
@@ -598,7 +608,7 @@ export default class EbbinghausReviewPlugin extends Plugin {
       if (!leaf) {
         leaf = this.app.workspace.getRightLeaf(false) ?? undefined;
         if (!leaf) {
-          if (reveal) new Notice("복습 현황 패널을 열 수 없습니다.");
+          if (reveal) new Notice(this.i18n.t("cannotOpenStatusPanel"));
           return;
         }
         await leaf.setViewState({ type: REVIEW_STATUS_VIEW_TYPE, active: true });
@@ -621,7 +631,7 @@ export default class EbbinghausReviewPlugin extends Plugin {
     const reviews = this.getDueReviews(now);
     if (reviews.length === 0) return;
 
-    const message = `오늘 복습할 노트가 ${reviews.length}개 있습니다.`;
+    const message = this.i18n.t("dueNotification", { count: reviews.length });
     new Notice(message, 8000);
 
     if (this.settings.systemNotifications && typeof Notification !== "undefined") {
@@ -645,7 +655,7 @@ export default class EbbinghausReviewPlugin extends Plugin {
     await this.withNoticeErrors(async () => {
       const { imported, cleaned } = await this.migrateLegacySchedules();
       if (imported > 0 || cleaned > 0) {
-        new Notice(`복습 정보 ${imported}개를 내부 저장소로 이전하고 노트 속성을 정리했습니다.`);
+        new Notice(this.i18n.t("migrationNotice", { count: imported }));
       }
     });
     await this.refreshStatus();
@@ -786,25 +796,25 @@ export default class EbbinghausReviewPlugin extends Plugin {
 
   private async startScheduleForActiveFile(): Promise<void> {
     const file = this.getActiveMarkdownFile();
-    if (!file) return void new Notice("먼저 Markdown 노트를 여세요.");
+    if (!file) return void new Notice(this.i18n.t("openMarkdownFirst"));
     await this.withNoticeErrors(() => this.startSchedule(file));
   }
 
   private async completeActiveReview(): Promise<void> {
     const file = this.getActiveMarkdownFile();
-    if (!file) return void new Notice("먼저 Markdown 노트를 여세요.");
+    if (!file) return void new Notice(this.i18n.t("openMarkdownFirst"));
     await this.withNoticeErrors(() => this.completeReview(file));
   }
 
   private async undoActiveReview(): Promise<void> {
     const file = this.getActiveMarkdownFile();
-    if (!file) return void new Notice("먼저 Markdown 노트를 여세요.");
+    if (!file) return void new Notice(this.i18n.t("openMarkdownFirst"));
     await this.withNoticeErrors(() => this.undoReview(file));
   }
 
   private async snoozeActiveReview(): Promise<void> {
     const file = this.getActiveMarkdownFile();
-    if (!file) return void new Notice("먼저 Markdown 노트를 여세요.");
+    if (!file) return void new Notice(this.i18n.t("openMarkdownFirst"));
     await this.withNoticeErrors(() => this.snoozeReview(file));
   }
 
@@ -828,8 +838,8 @@ class EbbinghausReviewSettingTab extends PluginSettingTab {
     this.containerEl.createEl("h2", { text: "Ebbinghaus Review" });
 
     new Setting(this.containerEl)
-      .setName("복습 간격")
-      .setDesc("각 복습 완료 후 다음 복습까지의 일수를 쉼표로 구분합니다. 예: 1, 3, 7, 14")
+      .setName(this.plugin.i18n.t("reviewIntervalsSetting"))
+      .setDesc(this.plugin.i18n.t("reviewIntervalsDesc"))
       .addText((text) =>
         text.setValue(this.plugin.settings.intervals).onChange(async (value) => {
           if (!parseIntervals(value)) {
@@ -843,8 +853,8 @@ class EbbinghausReviewSettingTab extends PluginSettingTab {
       );
 
     new Setting(this.containerEl)
-      .setName("알림 시각")
-      .setDesc("이 시각 이후에 오늘의 복습 알림을 표시합니다.")
+      .setName(this.plugin.i18n.t("notificationTimeSetting"))
+      .setDesc(this.plugin.i18n.t("notificationTimeDesc"))
       .addText((text) => {
         text.inputEl.type = "time";
         text.setValue(this.plugin.settings.notificationTime).onChange(async (value) => {
@@ -854,8 +864,8 @@ class EbbinghausReviewSettingTab extends PluginSettingTab {
       });
 
     new Setting(this.containerEl)
-      .setName("확인 주기")
-      .setDesc("Obsidian이 열려 있을 때 복습 대상 노트를 확인하는 주기(분)입니다.")
+      .setName(this.plugin.i18n.t("checkIntervalSetting"))
+      .setDesc(this.plugin.i18n.t("checkIntervalDesc"))
       .addText((text) => {
         text.inputEl.type = "number";
         text.inputEl.min = "1";
@@ -869,8 +879,8 @@ class EbbinghausReviewSettingTab extends PluginSettingTab {
       });
 
     new Setting(this.containerEl)
-      .setName("현황 패널 자동 유지")
-      .setDesc("Obsidian 시작이나 플러그인 업데이트 후 패널을 자동으로 열고, 닫히면 다시 복원합니다.")
+      .setName(this.plugin.i18n.t("keepPanelSetting"))
+      .setDesc(this.plugin.i18n.t("keepPanelDesc"))
       .addToggle((toggle) =>
         toggle.setValue(this.plugin.settings.keepStatusPanelOpen).onChange(async (value) => {
           this.plugin.settings.keepStatusPanelOpen = value;
@@ -880,8 +890,8 @@ class EbbinghausReviewSettingTab extends PluginSettingTab {
       );
 
     new Setting(this.containerEl)
-      .setName("시작할 때 알림")
-      .setDesc("설정한 알림 시각 전이라도 Obsidian을 열 때 오늘의 복습을 알려줍니다.")
+      .setName(this.plugin.i18n.t("notifyOnStartupSetting"))
+      .setDesc(this.plugin.i18n.t("notifyOnStartupDesc"))
       .addToggle((toggle) =>
         toggle.setValue(this.plugin.settings.notifyOnStartup).onChange(async (value) => {
           this.plugin.settings.notifyOnStartup = value;
@@ -890,13 +900,13 @@ class EbbinghausReviewSettingTab extends PluginSettingTab {
       );
 
     new Setting(this.containerEl)
-      .setName("시스템 알림")
-      .setDesc("권한이 허용된 경우 운영체제 알림도 함께 표시합니다.")
+      .setName(this.plugin.i18n.t("systemNotificationsSetting"))
+      .setDesc(this.plugin.i18n.t("systemNotificationsDesc"))
       .addToggle((toggle) =>
         toggle.setValue(this.plugin.settings.systemNotifications).onChange(async (value) => {
           if (value && typeof Notification === "undefined") {
             toggle.setValue(false);
-            new Notice("이 기기에서는 시스템 알림을 사용할 수 없습니다.");
+            new Notice(this.plugin.i18n.t("systemNotificationUnavailable"));
             value = false;
           } else if (value && typeof Notification !== "undefined") {
             const permission = Notification.permission === "default"
@@ -904,7 +914,7 @@ class EbbinghausReviewSettingTab extends PluginSettingTab {
               : Notification.permission;
             if (permission !== "granted") {
               toggle.setValue(false);
-              new Notice("시스템 알림 권한이 허용되지 않았습니다.");
+              new Notice(this.plugin.i18n.t("systemNotificationPermissionDenied"));
               value = false;
             }
           }

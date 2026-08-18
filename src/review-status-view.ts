@@ -1,20 +1,21 @@
 import { ItemView, TFile, WorkspaceLeaf } from "obsidian";
 import type EbbinghausReviewPlugin from "./main";
+import type { I18n } from "./i18n";
 
 export const REVIEW_STATUS_VIEW_TYPE = "ebbinghaus-review-status-view";
 
-function timingLabel(days: number | null): string {
-  if (days === null) return "날짜 없음";
-  if (days === 0) return "오늘 복습";
-  if (days > 0) return `${days}일 후`;
-  return `${Math.abs(days)}일 지남`;
+function timingLabel(i18n: I18n, days: number | null): string {
+  if (days === null) return i18n.t("noDate");
+  if (days === 0) return i18n.t("todayReview");
+  if (days > 0) return i18n.t("inDays", { count: days });
+  return i18n.t("daysOverdue", { count: Math.abs(days) });
 }
 
-function stepTimingLabel(days: number | null): string {
-  if (days === null) return "날짜 미정";
-  if (days === 0) return "오늘";
-  if (days > 0) return `${days}일 후`;
-  return `${Math.abs(days)}일 전`;
+function stepTimingLabel(i18n: I18n, days: number | null): string {
+  if (days === null) return i18n.t("dateTbd");
+  if (days === 0) return i18n.t("today");
+  if (days > 0) return i18n.t("inDays", { count: days });
+  return i18n.t("daysAgo", { count: Math.abs(days) });
 }
 
 export class ReviewStatusView extends ItemView {
@@ -32,7 +33,7 @@ export class ReviewStatusView extends ItemView {
   }
 
   getDisplayText(): string {
-    return "복습 현황";
+    return this.plugin.i18n.t("reviewStatus");
   }
 
   getIcon(): string {
@@ -52,25 +53,30 @@ export class ReviewStatusView extends ItemView {
     const file = this.plugin.getActiveMarkdownFile();
     const header = content.createDiv({ cls: "ebbinghaus-status-header" });
     const titleBlock = header.createDiv();
-    titleBlock.createEl("div", { cls: "ebbinghaus-status-eyebrow", text: "현재 노트" });
-    titleBlock.createEl("h3", { text: file?.basename ?? "열린 Markdown 노트 없음" });
+    titleBlock.createEl("div", {
+      cls: "ebbinghaus-status-eyebrow",
+      text: this.plugin.i18n.t("currentNote"),
+    });
+    titleBlock.createEl("h3", {
+      text: file?.basename ?? this.plugin.i18n.t("noMarkdownNoteOpen"),
+    });
 
     if (!file) {
       content.createEl("p", {
         cls: "ebbinghaus-status-empty",
-        text: "Markdown 노트를 열면 이곳에 복습 진행 상황이 표시됩니다.",
+        text: this.plugin.i18n.t("openMarkdownToSeeProgress"),
       });
       return;
     }
 
     const state = this.plugin.getReviewState(file);
     const badgeText = state.status === "active"
-      ? timingLabel(state.daysUntilNext)
+      ? timingLabel(this.plugin.i18n, state.daysUntilNext)
       : state.status === "completed"
-        ? "전체 완료"
+        ? this.plugin.i18n.t("allComplete")
         : state.status === "paused"
-          ? "일정 중지"
-          : "일정 없음";
+          ? this.plugin.i18n.t("schedulePaused")
+          : this.plugin.i18n.t("noSchedule");
     header.createEl("span", {
       cls: `ebbinghaus-status-badge is-${state.status}`,
       text: badgeText,
@@ -83,9 +89,12 @@ export class ReviewStatusView extends ItemView {
 
     const progressCard = content.createDiv({ cls: "ebbinghaus-progress-card" });
     const progressTop = progressCard.createDiv({ cls: "ebbinghaus-progress-top" });
-    progressTop.createEl("span", { text: "전체 진행률" });
+    progressTop.createEl("span", { text: this.plugin.i18n.t("overallProgress") });
     progressTop.createEl("strong", {
-      text: `${state.completedCount}/${state.totalStages} 완료`,
+      text: this.plugin.i18n.t("progressComplete", {
+        completed: state.completedCount,
+        total: state.totalStages,
+      }),
     });
 
     const progress = progressCard.createDiv({ cls: "ebbinghaus-progress-track" });
@@ -108,33 +117,58 @@ export class ReviewStatusView extends ItemView {
         text: String(index + 1),
       });
       const tooltip = stepState?.date
-        ? `${stepState.date} · ${stepTimingLabel(stepState.daysFromToday)}${stepState.status === "completed" ? " · 완료" : ""}`
+        ? `${stepState.date} · ${stepTimingLabel(this.plugin.i18n, stepState.daysFromToday)}${stepState.status === "completed" ? ` · ${this.plugin.i18n.t("completed")}` : ""}`
         : stepState?.status === "completed"
-          ? "완료 날짜 기록 없음"
-          : "날짜 미정";
+          ? this.plugin.i18n.t("completedDateMissing")
+          : this.plugin.i18n.t("dateTbd");
       step.setAttribute("aria-label", tooltip);
       step.setAttribute("data-tooltip-position", "top");
     }
 
     const facts = content.createDiv({ cls: "ebbinghaus-status-facts" });
     if (state.status === "active") {
-      this.renderFact(facts, "다음 복습", state.nextDate ?? "날짜 없음", timingLabel(state.daysUntilNext));
+      this.renderFact(
+        facts,
+        this.plugin.i18n.t("nextReview"),
+        state.nextDate ?? this.plugin.i18n.t("noDate"),
+        timingLabel(this.plugin.i18n, state.daysUntilNext),
+      );
     }
-    this.renderFact(facts, "마지막 복습", state.lastDate ?? "아직 없음");
-    this.renderFact(facts, "일정 시작", state.startedDate ?? "알 수 없음");
+    this.renderFact(
+      facts,
+      this.plugin.i18n.t("lastReview"),
+      state.lastDate ?? this.plugin.i18n.t("noneYet"),
+    );
+    this.renderFact(
+      facts,
+      this.plugin.i18n.t("scheduleStarted"),
+      state.startedDate ?? this.plugin.i18n.t("unknown"),
+    );
 
     const schedule = content.createDiv({ cls: "ebbinghaus-schedule-preview" });
-    schedule.createEl("div", { cls: "ebbinghaus-status-eyebrow", text: "복습 간격" });
-    schedule.createEl("p", { text: this.plugin.intervals.map((days) => `${days}일`).join(" → ") });
+    schedule.createEl("div", {
+      cls: "ebbinghaus-status-eyebrow",
+      text: this.plugin.i18n.t("reviewIntervals"),
+    });
+    schedule.createEl("p", {
+      text: this.plugin.intervals
+        .map((days) => this.plugin.i18n.t("intervalDay", { count: days }))
+        .join(" → "),
+    });
 
     const actions = content.createDiv({ cls: "ebbinghaus-status-panel-actions" });
     if (state.status === "active") {
-      const reviewed = actions.createEl("button", { cls: "mod-cta", text: "복습 완료" });
+      const reviewed = actions.createEl("button", {
+        cls: "mod-cta",
+        text: this.plugin.i18n.t("reviewComplete"),
+      });
       reviewed.addEventListener("click", () => {
         void this.runAndRefresh(() => this.plugin.completeReview(file), version);
       });
 
-      const snooze = actions.createEl("button", { text: "내일로 미루기" });
+      const snooze = actions.createEl("button", {
+        text: this.plugin.i18n.t("postponeUntilTomorrow"),
+      });
       snooze.addEventListener("click", () => {
         void this.runAndRefresh(() => this.plugin.snoozeReview(file), version);
       });
@@ -143,7 +177,7 @@ export class ReviewStatusView extends ItemView {
     if (this.plugin.canUndoReview(file)) {
       const undo = actions.createEl("button", {
         cls: "ebbinghaus-undo-review",
-        text: "복습 완료 취소",
+        text: this.plugin.i18n.t("undoReviewCompletion"),
       });
       undo.addEventListener("click", () => {
         void this.runAndRefresh(() => this.plugin.undoReview(file), version);
@@ -151,7 +185,9 @@ export class ReviewStatusView extends ItemView {
     }
 
     const restart = actions.createEl("button", {
-      text: state.status === "completed" ? "일정 다시 시작" : "처음부터 재시작",
+      text: state.status === "completed"
+        ? this.plugin.i18n.t("restartSchedule")
+        : this.plugin.i18n.t("restartFromBeginning"),
     });
     restart.addEventListener("click", () => {
       void this.runAndRefresh(() => this.plugin.startSchedule(file), version);
@@ -161,11 +197,18 @@ export class ReviewStatusView extends ItemView {
   private renderUnscheduled(content: HTMLElement, file: TFile): void {
     const empty = content.createDiv({ cls: "ebbinghaus-status-empty-card" });
     empty.createEl("div", { cls: "ebbinghaus-status-empty-icon", text: "↗" });
-    empty.createEl("h4", { text: "아직 복습 일정이 없습니다" });
+    empty.createEl("h4", { text: this.plugin.i18n.t("noReviewScheduleYet") });
     empty.createEl("p", {
-      text: `기본 간격 ${this.plugin.intervals.join(" · ")}일로 복습을 시작할 수 있습니다.`,
+      text: this.plugin.i18n.t("startWithDefaultIntervals", {
+        intervals: this.plugin.intervals
+          .map((days) => this.plugin.i18n.t("intervalDay", { count: days }))
+          .join(" · "),
+      }),
     });
-    const start = empty.createEl("button", { cls: "mod-cta", text: "복습 일정 시작" });
+    const start = empty.createEl("button", {
+      cls: "mod-cta",
+      text: this.plugin.i18n.t("startReviewSchedule"),
+    });
     start.addEventListener("click", () => {
       void this.runAndRefresh(() => this.plugin.startSchedule(file), this.renderVersion);
     });
