@@ -1,0 +1,598 @@
+.ebbinghaus-review-status {
+  cursor: pointer;
+}
+
+.ebbinghaus-note-status {
+  color: var(--interactive-accent);
+  font-weight: var(--font-semibold);
+}
+
+.ebbinghaus-status-panel {
+  padding: var(--size-4-4);
+}
+
+.ebbinghaus-status-header {
+  align-items: flex-start;
+  display: flex;
+  gap: var(--size-4-3);
+  justify-content: space-between;
+  margin-bottom: var(--size-4-4);
+}
+
+.ebbinghaus-status-header h3 {
+  font-size: var(--font-ui-large);
+  line-height: var(--line-height-tight);
+  margin: var(--size-4-1) 0 0;
+  overflow-wrap: anywhere;
+}
+
+.ebbinghaus-status-eyebrow {
+  color: var(--text-muted);
+  font-size: var(--font-ui-smaller);
+  font-weight: var(--font-semibold);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.ebbinghaus-status-badge {
+  background: var(--background-modifier-hover);
+  border-radius: var(--radius-s);
+  color: var(--text-muted);
+  flex: 0 0 auto;
+  font-size: var(--font-ui-smaller);
+  font-weight: var(--font-semibold);
+  padding: var(--size-2-2) var(--size-4-2);
+}
+
+.ebbinghaus-status-badge.is-active {
+  background: color-mix(in srgb, var(--interactive-accent) 14%, transparent);
+  color: var(--interactive-accent);
+}
+
+.ebbinghaus-status-badge.is-completed {
+  background: color-mix(in srgb, var(--color-green) 15%, transparent);
+  color: var(--color-green);
+}
+
+.ebbinghaus-progress-card,
+.ebbinghaus-status-facts,
+.ebbinghaus-schedule-preview,
+.ebbinghaus-status-empty-card {
+  background: var(--background-secondary);
+  border: 1px solid var(--background-modifier-border);
+  border-radius: var(--radius-m);
+  margin-bottom: var(--size-4-3);
+  padding: var(--size-4-3);
+}
+
+.ebbinghaus-progress-top {
+  align-items: baseline;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: var(--size-4-2);
+}
+
+.ebbinghaus-progress-top span {
+  color: var(--text-muted);
+  font-size: var(--font-ui-small);
+}
+
+.ebbinghaus-progress-track {
+  background: var(--background-modifier-border);
+  border-radius: 999px;
+  height: 8px;
+  overflow: hidden;
+}
+
+.ebbinghaus-progress-fill {
+  background: var(--interactive-accent);
+  border-radius: inherit;
+  height: 100%;
+  transition: width 180ms ease;
+}
+
+.ebbinghaus-progress-steps {
+  display: flex;
+  justify-content: space-between;
+  margin-top: var(--size-4-3);
+}
+
+.ebbinghaus-progress-steps span {
+  align-items: center;
+  background: var(--background-primary);
+  border: 1px solid var(--background-modifier-border);
+  border-radius: 50%;
+  color: var(--text-faint);
+  display: flex;
+  font-size: 10px;
+  height: 22px;
+  justify-content: center;
+  width: 22px;
+}
+
+.ebbinghaus-progress-steps span.is-complete {
+  background: var(--interactive-accent);
+  border-color: var(--interactive-accent);
+  color: var(--text-on-accent);
+}
+
+.ebbinghaus-progress-steps span.is-current {
+  border: 2px solid var(--interactive-accent);
+  color: var(--interactive-accent);
+  font-weight: var(--font-bold);
+}
+
+.ebbinghaus-status-fact {
+  align-items: center;
+  display: flex;
+  gap: var(--size-4-3);
+  justify-content: space-between;
+  padding: var(--size-4-2) 0;
+}
+
+.ebbinghaus-status-fact + .ebbinghaus-status-fact {
+  border-top: 1px solid var(--background-modifier-border);
+}
+
+.ebbinghaus-status-fact > span {
+  color: var(--text-muted);
+  font-size: var(--font-ui-small);
+}
+
+.ebbinghaus-status-fact > div {
+  align-items: flex-end;
+  display: flex;
+  flex-direction: column;
+}
+
+.ebbinghaus-status-fact small {
+  color: var(--text-muted);
+}
+
+.ebbinghaus-schedule-preview p {
+  color: var(--text-muted);
+  font-size: var(--font-ui-small);
+  line-height: var(--line-height-normal);
+  margin: var(--size-4-2) 0 0;
+}
+
+.ebbinghaus-status-panel-actions {
+  display: grid;
+  gap: var(--size-4-2);
+  grid-template-columns: 1fr 1fr;
+}
+
+.ebbinghaus-status-panel-actions button:last-child:nth-child(odd) {
+  grid-column: 1 / -1;
+}
+
+.ebbinghaus-undo-review {
+  color: var(--text-warning);
+}
+
+.ebbinghaus-status-empty {
+  color: var(--text-muted);
+}
+
+.ebbinghaus-status-empty-card {
+  text-align: center;
+}
+
+.ebbinghaus-status-empty-card h4 {
+  margin: var(--size-4-2) 0;
+}
+
+.ebbinghaus-status-empty-card p {
+  color: var(--text-muted);
+  font-size: var(--font-ui-small);
+}
+
+.ebbinghaus-status-empty-icon {
+  align-items: center;
+  background: color-mix(in srgb, var(--interactive-accent) 14%, transparent);
+  border-radius: 50%;
+  color: var(--interactive-accent);
+  display: inline-flex;
+  font-size: var(--font-ui-large);
+  height: 42px;
+  justify-content: center;
+  width: 42px;
+}
+
+.ebbinghaus-dashboard {
+  margin: 0 auto;
+  max-width: 980px;
+  overflow-y: auto;
+  padding: clamp(24px, 5vw, 64px);
+}
+
+.ebbinghaus-dashboard-header h2 {
+  font-size: 2em;
+  margin: var(--size-4-1) 0 var(--size-4-2);
+}
+
+.ebbinghaus-dashboard-header p,
+.ebbinghaus-dashboard-section-header p,
+.ebbinghaus-activity-header p {
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.ebbinghaus-dashboard-tabs {
+  border-bottom: 1px solid var(--background-modifier-border);
+  display: flex;
+  gap: var(--size-4-1);
+  margin: var(--size-4-6) 0 var(--size-4-6);
+}
+
+.ebbinghaus-dashboard-tabs button {
+  background: transparent;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
+  box-shadow: none;
+  color: var(--text-muted);
+  font-weight: var(--font-semibold);
+  margin-bottom: -1px;
+  padding: var(--size-4-3) var(--size-4-4);
+}
+
+.ebbinghaus-dashboard-tabs button.is-active {
+  border-bottom-color: var(--interactive-accent);
+  color: var(--text-normal);
+}
+
+.ebbinghaus-dashboard-section-header {
+  align-items: center;
+  display: flex;
+  gap: var(--size-4-4);
+  justify-content: space-between;
+  margin-bottom: var(--size-4-5);
+}
+
+.ebbinghaus-dashboard-section-header h3 {
+  font-size: var(--font-ui-large);
+  margin: 0 0 var(--size-4-1);
+}
+
+.ebbinghaus-dashboard-count {
+  background: color-mix(in srgb, var(--interactive-accent) 14%, transparent);
+  border-radius: 999px;
+  color: var(--interactive-accent);
+  font-weight: var(--font-semibold);
+  padding: var(--size-4-1) var(--size-4-3);
+}
+
+.ebbinghaus-dashboard-count.is-overdue {
+  background: color-mix(in srgb, var(--color-red) 14%, transparent);
+  color: var(--color-red);
+}
+
+.ebbinghaus-dashboard-empty {
+  background: var(--background-secondary);
+  border: 1px solid var(--background-modifier-border);
+  border-radius: var(--radius-l);
+  padding: var(--size-4-12) var(--size-4-6);
+  text-align: center;
+}
+
+.ebbinghaus-dashboard-empty-mark {
+  align-items: center;
+  background: color-mix(in srgb, var(--color-green) 16%, transparent);
+  border-radius: 50%;
+  color: var(--color-green);
+  display: inline-flex;
+  font-size: 24px;
+  height: 52px;
+  justify-content: center;
+  width: 52px;
+}
+
+.ebbinghaus-dashboard-empty h4 {
+  font-size: var(--font-ui-large);
+  margin: var(--size-4-4) 0 var(--size-4-2);
+}
+
+.ebbinghaus-dashboard-empty p {
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.ebbinghaus-dashboard-review-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-4-3);
+}
+
+.ebbinghaus-undo-banner {
+  align-items: center;
+  background: color-mix(in srgb, var(--color-yellow) 12%, var(--background-secondary));
+  border: 1px solid color-mix(in srgb, var(--color-yellow) 35%, var(--background-modifier-border));
+  border-radius: var(--radius-m);
+  display: flex;
+  gap: var(--size-4-4);
+  justify-content: space-between;
+  margin-bottom: var(--size-4-4);
+  padding: var(--size-4-3) var(--size-4-4);
+}
+
+.ebbinghaus-undo-banner > div {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.ebbinghaus-undo-banner strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ebbinghaus-undo-banner small {
+  color: var(--text-muted);
+}
+
+.ebbinghaus-undo-banner button {
+  flex: 0 0 auto;
+}
+
+.ebbinghaus-dashboard-review-card {
+  align-items: center;
+  background: var(--background-secondary);
+  border: 1px solid var(--background-modifier-border);
+  border-radius: var(--radius-l);
+  display: flex;
+  gap: var(--size-4-5);
+  justify-content: space-between;
+  padding: var(--size-4-4);
+}
+
+.ebbinghaus-dashboard-review-main {
+  min-width: 0;
+}
+
+.ebbinghaus-dashboard-review-main > span {
+  border-radius: 999px;
+  display: inline-block;
+  font-size: var(--font-ui-smaller);
+  font-weight: var(--font-semibold);
+  margin-bottom: var(--size-4-2);
+  padding: 2px var(--size-4-2);
+}
+
+.ebbinghaus-dashboard-review-main > span.is-today {
+  background: color-mix(in srgb, var(--interactive-accent) 14%, transparent);
+  color: var(--interactive-accent);
+}
+
+.ebbinghaus-dashboard-review-main > span.is-overdue {
+  background: color-mix(in srgb, var(--color-red) 14%, transparent);
+  color: var(--color-red);
+}
+
+.ebbinghaus-dashboard-review-main h4 {
+  font-size: var(--font-ui-medium);
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ebbinghaus-dashboard-review-main p {
+  color: var(--text-muted);
+  font-size: var(--font-ui-small);
+  margin: var(--size-4-1) 0 0;
+}
+
+.ebbinghaus-dashboard-review-actions {
+  display: flex;
+  flex: 0 0 auto;
+  gap: var(--size-4-2);
+}
+
+.ebbinghaus-stat-cards {
+  display: grid;
+  gap: var(--size-4-3);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin-bottom: var(--size-4-5);
+}
+
+.ebbinghaus-stat-card,
+.ebbinghaus-activity-card,
+.ebbinghaus-stat-summary {
+  background: var(--background-secondary);
+  border: 1px solid var(--background-modifier-border);
+  border-radius: var(--radius-l);
+}
+
+.ebbinghaus-stat-card {
+  padding: var(--size-4-4);
+}
+
+.ebbinghaus-stat-card > span {
+  color: var(--text-muted);
+  font-size: var(--font-ui-small);
+}
+
+.ebbinghaus-stat-card > div {
+  align-items: baseline;
+  display: flex;
+  gap: var(--size-4-1);
+  margin-top: var(--size-4-2);
+}
+
+.ebbinghaus-stat-card strong {
+  font-size: 2em;
+}
+
+.ebbinghaus-stat-card small {
+  color: var(--text-muted);
+}
+
+.ebbinghaus-activity-card {
+  margin-bottom: var(--size-4-4);
+  padding: var(--size-4-5);
+}
+
+.ebbinghaus-activity-header {
+  align-items: flex-start;
+  display: flex;
+  justify-content: space-between;
+}
+
+.ebbinghaus-activity-header h4 {
+  margin: 0 0 var(--size-4-1);
+}
+
+.ebbinghaus-activity-header > strong {
+  color: var(--interactive-accent);
+  font-size: var(--font-ui-large);
+}
+
+.ebbinghaus-activity-chart {
+  align-items: end;
+  display: grid;
+  gap: var(--size-4-3);
+  grid-template-columns: repeat(7, 1fr);
+  height: 210px;
+  margin-top: var(--size-4-5);
+}
+
+.ebbinghaus-activity-column {
+  align-items: center;
+  display: grid;
+  grid-template-rows: 20px minmax(0, 1fr) 20px;
+  height: 100%;
+  text-align: center;
+}
+
+.ebbinghaus-activity-value,
+.ebbinghaus-activity-column small {
+  color: var(--text-muted);
+  font-size: var(--font-ui-smaller);
+}
+
+.ebbinghaus-activity-track {
+  align-items: end;
+  background: var(--background-primary);
+  border-radius: var(--radius-s);
+  display: flex;
+  height: 100%;
+  justify-content: center;
+  overflow: hidden;
+  width: 100%;
+}
+
+.ebbinghaus-activity-track > div {
+  background: var(--background-modifier-border);
+  border-radius: var(--radius-s) var(--radius-s) 0 0;
+  min-height: 4px;
+  transition: height 180ms ease;
+  width: 100%;
+}
+
+.ebbinghaus-activity-track > div.is-active {
+  background: var(--interactive-accent);
+}
+
+.ebbinghaus-stat-summary {
+  align-items: center;
+  display: grid;
+  gap: var(--size-4-3);
+  grid-template-columns: repeat(3, 1fr auto);
+  padding: var(--size-4-4);
+}
+
+.ebbinghaus-stat-summary span {
+  color: var(--text-muted);
+}
+
+.ebbinghaus-review-summary {
+  color: var(--text-muted);
+  margin-top: 0;
+}
+
+.ebbinghaus-review-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-4-2);
+}
+
+.ebbinghaus-review-row {
+  align-items: center;
+  border: 1px solid var(--background-modifier-border);
+  border-radius: var(--radius-m);
+  display: flex;
+  gap: var(--size-4-3);
+  justify-content: space-between;
+  padding: var(--size-4-3);
+}
+
+.ebbinghaus-review-details {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.ebbinghaus-review-details strong,
+.ebbinghaus-review-details small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ebbinghaus-review-details small {
+  color: var(--text-muted);
+}
+
+.ebbinghaus-review-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--size-4-2);
+}
+
+.ebbinghaus-review-invalid {
+  border-color: var(--text-error) !important;
+}
+
+@media (max-width: 600px) {
+  .ebbinghaus-review-row {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .ebbinghaus-review-actions button {
+    flex: 1;
+  }
+
+  .ebbinghaus-dashboard {
+    padding: var(--size-4-5) var(--size-4-3);
+  }
+
+  .ebbinghaus-dashboard-review-card {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .ebbinghaus-dashboard-review-actions button {
+    flex: 1;
+  }
+
+  .ebbinghaus-undo-banner {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .ebbinghaus-stat-cards {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .ebbinghaus-activity-chart {
+    gap: var(--size-4-1);
+  }
+
+  .ebbinghaus-stat-summary {
+    grid-template-columns: 1fr auto;
+  }
+}

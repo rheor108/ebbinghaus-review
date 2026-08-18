@@ -1,0 +1,26 @@
+{
+  "name": "obsidian-ebbinghaus-review",
+  "version": "0.5.0",
+  "description": "Ebbinghaus-style spaced review scheduling for Obsidian notes",
+  "main": "main.js",
+  "type": "module",
+  "scripts": {
+    "dev": "node esbuild.config.mjs",
+    "build": "tsc --noEmit --skipLibCheck && node esbuild.config.mjs production",
+    "test": "tsx --test tests/**/*.test.ts",
+    "check": "npm run test && npm run build"
+  },
+  "keywords": [
+    "obsidian",
+    "spaced-repetition",
+    "ebbinghaus"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^22.15.17",
+    "esbuild": "^0.25.5",
+    "obsidian": "latest",
+    "tsx": "^4.20.3",
+    "typescript": "^5.8.3"
+  }
+}
