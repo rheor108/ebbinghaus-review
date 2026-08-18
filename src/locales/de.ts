@@ -3,7 +3,7 @@ import type { MessageDictionary } from "../messages";
 const messages: MessageDictionary = {
   "reviewStatus": "Wiederholungsstatus",
   "studyDashboard": "Lern-Dashboard",
-  "currentNote": "Aktueller Hinweis",
+  "currentNote": "Aktuelle Notiz",
   "noMarkdownNoteOpen": "Keine Markdown-Notiz geöffnet",
   "openMarkdownToSeeProgress": "Öffne eine Markdown-Notiz, um hier den Wiederholungsfortschritt zu sehen.",
   "noDate": "Kein Datum",
@@ -55,7 +55,7 @@ const messages: MessageDictionary = {
   "studyStreak": "Aufeinanderfolgende Lerntage",
   "activeNotes": "Aktive Notizen",
   "totalCompleted": "Vollständig abgeschlossen",
-  "timesUnit": "Zeiten",
+  "timesUnit": "Mal",
   "daysUnit": "Tage",
   "notesUnit": "Notizen",
   "reviewsLast7Days": "Wiederholungen der letzten 7 Tage",
@@ -100,12 +100,12 @@ const messages: MessageDictionary = {
   "notificationTimeDesc": "Nach dieser Uhrzeit die heutige Wiederholungserinnerung anzeigen.",
   "checkIntervalSetting": "Intervall prüfen",
   "checkIntervalDesc": "Wie oft in Minuten nach fälligen Notizen gesucht werden soll, während Obsidian geöffnet ist.",
-  "keepPanelSetting": "Lassen Sie das Statusfeld geöffnet",
-  "keepPanelDesc": "Öffnen Sie das Panel, nachdem Obsidian gestartet oder das Plugin aktualisiert wurde, und stellen Sie es wieder her, wenn es geschlossen wird.",
+  "keepPanelSetting": "Statusfeld geöffnet halten",
+  "keepPanelDesc": "Das Panel nach dem Start von Obsidian oder einer Plugin-Aktualisierung öffnen und wiederherstellen, falls es geschlossen wird.",
   "notifyOnStartupSetting": "Beim Start benachrichtigen",
   "notifyOnStartupDesc": "Beim Öffnen von Obsidian die heutigen Wiederholungen anzeigen, auch vor der eingestellten Benachrichtigungszeit.",
   "systemNotificationsSetting": "Systembenachrichtigungen",
-  "systemNotificationsDesc": "Zeigen Sie auch Betriebssystembenachrichtigungen an, wenn die Berechtigung erteilt wird.",
+  "systemNotificationsDesc": "Bei erteilter Berechtigung auch Betriebssystembenachrichtigungen anzeigen.",
   "systemNotificationUnavailable": "Systembenachrichtigungen sind auf diesem Gerät nicht verfügbar.",
   "systemNotificationPermissionDenied": "Die Berechtigung zur Systembenachrichtigung wurde nicht erteilt."
 };

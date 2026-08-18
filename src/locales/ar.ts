@@ -95,7 +95,7 @@ const messages: MessageDictionary = {
   "migrationNotice": "تم نقل سجلات مراجعة {count} إلى وحدة التخزين الداخلية وتنظيف خصائص الملاحظة.",
   "openMarkdownFirst": "افتح ملاحظة Markdown أولاً.",
   "reviewIntervalsSetting": "فترات المراجعة",
-  "reviewIntervalsDesc": "أيام مفصولة بفواصل حتى المراجعة التالية بعد كل إكمال. مثال: 1، 3، 7، 14",
+  "reviewIntervalsDesc": "أيام حتى المراجعة التالية، مفصولة بفواصل إنجليزية. مثال: 1, 3, 7, 14",
   "notificationTimeSetting": "وقت الإخطار",
   "notificationTimeDesc": "إظهار إشعار المراجعة اليوم بعد هذا الوقت.",
   "checkIntervalSetting": "تحقق الفاصل الزمني",

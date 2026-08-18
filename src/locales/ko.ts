@@ -38,7 +38,7 @@ const messages: MessageDictionary = {
   "dashboardSubtitle": "오늘 할 일과 학습 흐름을 한곳에서 확인하세요.",
   "overdueReviews": "놓친 복습",
   "studyStatistics": "학습 통계",
-  "notesDueToday": "예정일이 오늘인 노트입니다.",
+  "notesDueToday": "오늘 복습할 노트입니다.",
   "itemCount": "{count}개",
   "allReviewsDoneToday": "오늘 복습을 모두 마쳤습니다",
   "newReviewsAppear": "새 복습 대상이 생기면 이곳에 자동으로 표시됩니다.",
