@@ -1,6 +1,6 @@
 {
   "name": "obsidian-ebbinghaus-review",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "Ebbinghaus-style spaced review scheduling for Obsidian notes",
   "main": "main.js",
   "type": "module",
@@ -8,7 +8,8 @@
     "dev": "node esbuild.config.mjs",
     "build": "tsc --noEmit --skipLibCheck && node esbuild.config.mjs production",
     "test": "tsx --test tests/**/*.test.ts",
-    "check": "npm run test && npm run build"
+    "audit:i18n": "tsx scripts/audit-translations.ts",
+    "check": "npm run audit:i18n && npm run test && npm run build"
   },
   "keywords": [
     "obsidian",

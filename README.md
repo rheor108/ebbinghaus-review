@@ -30,6 +30,8 @@ Schedule spaced reviews for each note, see what is due today or overdue, and tra
 
 The plugin uses Obsidian's official `getLanguage()` API and bundles translations for every locale marked as complete for the app in the [official Obsidian translations repository](https://github.com/obsidianmd/obsidian-translations#existing-languages). No network connection is needed for translation. English is used as a safe fallback for newly added or unknown locales.
 
+Translations are machine-assisted. Korean has completed a manual editorial review; every other localized dictionary has full structural QA and targeted terminology corrections but still needs native-speaker review before it can be considered native-certified. See the [translation quality and review status](docs/translation-quality.md).
+
 ### Usage
 
 1. Open a Markdown note.
@@ -46,5 +48,7 @@ Requires Obsidian 1.8.7 or later.
 npm install
 npm run check
 ```
+
+Run `npm run audit:i18n` to validate all 4,708 localized messages independently.
 
 Copy `main.js`, `manifest.json`, and `styles.css` into a test vault's `.obsidian/plugins/ebbinghaus-review/` directory, then enable **Ebbinghaus Review** under **Settings → Community plugins**.
