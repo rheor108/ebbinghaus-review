@@ -32,7 +32,7 @@ The audit currently covers **44 locales × 107 messages = 4,708 translated strin
 
 ## How to review a locale
 
-1. Open `src/messages.ts` for the English meaning and `src/translations.ts` for the locale.
+1. Open `src/messages.ts` for the English meaning and the matching `src/locales/<locale>.ts` file for the locale.
 2. Review all 107 messages in the context of spaced-repetition study, not product reviews or general document inspection.
 3. Keep every placeholder unchanged.
 4. Keep `Obsidian` as the product name and follow the official Obsidian locale’s convention for `Markdown` and “note.”
