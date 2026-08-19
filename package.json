@@ -1,6 +1,6 @@
 {
   "name": "obsidian-ebbinghaus-review",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "description": "Ebbinghaus-style spaced review scheduling for Obsidian notes",
   "main": "main.js",
   "type": "module",

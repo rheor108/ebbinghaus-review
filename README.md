@@ -12,6 +12,7 @@ Schedule spaced reviews for each note, see what is due today or overdue, and tra
 - Review today's notes, overdue notes, progress, and seven-day activity from a dedicated dashboard.
 - Mark a review complete, postpone it until tomorrow, or undo an accidental completion.
 - Keep review data in plugin storage so note properties stay clean.
+- Detect review-data changes from another device in an iCloud-based vault without restarting Obsidian.
 - Receive in-app and optional operating-system notifications.
 - Use the same plugin on desktop and mobile.
 - Automatically match Obsidian's interface language across all 46 completed app locales; unknown future locales fall back to English.

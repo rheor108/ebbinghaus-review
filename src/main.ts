@@ -43,6 +43,8 @@ import {
   type StoredReviewSchedule,
 } from "./review-storage";
 import { createI18n, type I18n } from "./i18n";
+import { settingsFingerprint } from "./settings-sync";
+
 interface EbbinghausReviewSettings {
   intervals: string;
   /** Kept only to locate and remove properties written by versions before 0.5.0. */
@@ -56,6 +58,16 @@ interface EbbinghausReviewSettings {
   reviewLog: ReviewActivityEntry[];
   undoSnapshots: Record<string, CompletionUndoSnapshot>;
   schedules: Record<string, StoredReviewSchedule>;
+}
+
+type UserSettingKey = Exclude<
+  keyof EbbinghausReviewSettings,
+  "reviewLog" | "undoSnapshots" | "schedules"
+>;
+
+interface SettingsMutation<T> {
+  changed: boolean;
+  value: T;
 }
 
 interface CompletionUndoSnapshot {
@@ -122,6 +134,8 @@ const DEFAULT_SETTINGS: EbbinghausReviewSettings = {
   schedules: {},
 };
 
+const SETTINGS_SYNC_INTERVAL_MS = 2_000;
+
 function isCompletionUndoSnapshot(value: unknown): value is CompletionUndoSnapshot {
   if (!value || typeof value !== "object") return false;
   const snapshot = value as Record<string, unknown>;
@@ -150,6 +164,9 @@ export default class EbbinghausReviewPlugin extends Plugin {
   private dueStatusBar: HTMLElement | null = null;
   private noteStatusBar: HTMLElement | null = null;
   private checkIntervalId: number | null = null;
+  private settingsSyncIntervalId: number | null = null;
+  private knownSettingsFingerprint = "";
+  private settingsQueue: Promise<void> = Promise.resolve();
   private restoringStatusView = false;
   private isUnloading = false;
 
@@ -240,6 +257,7 @@ export default class EbbinghausReviewPlugin extends Plugin {
     this.addSettingTab(new EbbinghausReviewSettingTab(this.app, this));
 
     this.updateCheckInterval();
+    this.startSettingsSync();
 
     this.app.workspace.onLayoutReady(() => void this.initializeLayout());
 
@@ -337,79 +355,82 @@ export default class EbbinghausReviewPlugin extends Plugin {
   }
 
   async startSchedule(file: TFile, now = new Date()): Promise<void> {
-    const nextDate = firstReviewDate(now, this.intervals);
-    this.settings.schedules[file.path] = {
-      enabled: true,
-      startedDate: toDateKey(now),
-      stage: 0,
-      nextDate,
-      lastDate: null,
-      history: [],
-    };
-    delete this.settings.undoSnapshots[file.path];
-    await this.saveSettings();
+    const nextDate = await this.mutateSettings(() => {
+      const date = firstReviewDate(now, this.intervals);
+      this.settings.schedules[file.path] = {
+        enabled: true,
+        startedDate: toDateKey(now),
+        stage: 0,
+        nextDate: date,
+        lastDate: null,
+        history: [],
+      };
+      delete this.settings.undoSnapshots[file.path];
+      return { changed: true, value: date };
+    });
     new Notice(this.i18n.t("scheduleStartedNotice", { date: nextDate }));
     await this.refreshStatus();
     await this.activateStatusView();
   }
 
   async completeReview(file: TFile, now = new Date()): Promise<void> {
-    const schedule = this.settings.schedules[file.path];
-    if (!schedule?.enabled) {
-      throw new Error(this.i18n.t("noActiveSchedule"));
-    }
-    let resultMessage = this.i18n.t("reviewRecorded");
-    const completedDate = toDateKey(now);
-    const stage = schedule.stage;
-    const next = advanceSchedule(now, stage, this.intervals);
-    const history = [...schedule.history];
-    const activityEntry = { date: completedDate, filePath: file.path, stage };
-    this.settings.undoSnapshots[file.path] = {
-      enabled: schedule.enabled,
-      stage,
-      nextDate: schedule.nextDate,
-      lastDate: schedule.lastDate,
-      history: [...history],
-      completedDate,
-      completedStage: stage,
-      hadLogEntry: this.settings.reviewLog.some((entry) =>
-        entry.date === activityEntry.date &&
-        entry.filePath === activityEntry.filePath &&
-        entry.stage === activityEntry.stage),
-      createdAt: Date.now(),
-    };
-    history[stage] = completedDate;
-    this.settings.schedules[file.path] = {
-      ...schedule,
-      enabled: !next.completed,
-      stage: next.nextStage,
-      nextDate: next.nextDate,
-      lastDate: completedDate,
-      history,
-    };
-    resultMessage = next.completed
-      ? this.i18n.t("allStagesCompleted")
-      : this.i18n.t("reviewRecordedNext", { date: next.nextDate ?? "" });
-    this.settings.reviewLog.push({
-      date: completedDate,
-      filePath: file.path,
-      stage,
+    const resultMessage = await this.mutateSettings(() => {
+      const schedule = this.settings.schedules[file.path];
+      if (!schedule?.enabled) {
+        throw new Error(this.i18n.t("noActiveSchedule"));
+      }
+      const completedDate = toDateKey(now);
+      const stage = schedule.stage;
+      const next = advanceSchedule(now, stage, this.intervals);
+      const history = [...schedule.history];
+      const activityEntry = { date: completedDate, filePath: file.path, stage };
+      this.settings.undoSnapshots[file.path] = {
+        enabled: schedule.enabled,
+        stage,
+        nextDate: schedule.nextDate,
+        lastDate: schedule.lastDate,
+        history: [...history],
+        completedDate,
+        completedStage: stage,
+        hadLogEntry: this.settings.reviewLog.some((entry) =>
+          entry.date === activityEntry.date &&
+          entry.filePath === activityEntry.filePath &&
+          entry.stage === activityEntry.stage),
+        createdAt: Date.now(),
+      };
+      history[stage] = completedDate;
+      this.settings.schedules[file.path] = {
+        ...schedule,
+        enabled: !next.completed,
+        stage: next.nextStage,
+        nextDate: next.nextDate,
+        lastDate: completedDate,
+        history,
+      };
+      this.settings.reviewLog.push(activityEntry);
+      this.settings.reviewLog = deduplicateActivity(this.settings.reviewLog);
+      return {
+        changed: true,
+        value: next.completed
+          ? this.i18n.t("allStagesCompleted")
+          : this.i18n.t("reviewRecordedNext", { date: next.nextDate ?? "" }),
+      };
     });
-    this.settings.reviewLog = deduplicateActivity(this.settings.reviewLog);
-    await this.saveSettings();
     new Notice(resultMessage);
     await this.refreshStatus();
   }
 
   async snoozeReview(file: TFile, now = new Date()): Promise<void> {
-    const schedule = this.settings.schedules[file.path];
-    if (!schedule?.enabled) {
-      throw new Error(this.i18n.t("noActiveSchedule"));
-    }
-    const tomorrow = toDateKey(addDays(now, 1));
-    this.settings.schedules[file.path] = { ...schedule, nextDate: tomorrow };
-    delete this.settings.undoSnapshots[file.path];
-    await this.saveSettings();
+    const tomorrow = await this.mutateSettings(() => {
+      const schedule = this.settings.schedules[file.path];
+      if (!schedule?.enabled) {
+        throw new Error(this.i18n.t("noActiveSchedule"));
+      }
+      const date = toDateKey(addDays(now, 1));
+      this.settings.schedules[file.path] = { ...schedule, nextDate: date };
+      delete this.settings.undoSnapshots[file.path];
+      return { changed: true, value: date };
+    });
     new Notice(this.i18n.t("reviewPostponed", { date: tomorrow }));
     await this.refreshStatus();
   }
@@ -428,32 +449,34 @@ export default class EbbinghausReviewPlugin extends Plugin {
   }
 
   async undoReview(file: TFile): Promise<void> {
-    const snapshot = this.settings.undoSnapshots[file.path];
-    if (!snapshot) throw new Error(this.i18n.t("noUndoRecord"));
-    const schedule = this.settings.schedules[file.path];
-    if (!schedule || schedule.stage !== snapshot.stage + 1 ||
-      schedule.lastDate !== snapshot.completedDate) {
-      throw new Error(this.i18n.t("cannotUndoChanged"));
-    }
+    await this.mutateSettings(() => {
+      const snapshot = this.settings.undoSnapshots[file.path];
+      if (!snapshot) throw new Error(this.i18n.t("noUndoRecord"));
+      const schedule = this.settings.schedules[file.path];
+      if (!schedule || schedule.stage !== snapshot.stage + 1 ||
+        schedule.lastDate !== snapshot.completedDate) {
+        throw new Error(this.i18n.t("cannotUndoChanged"));
+      }
 
-    this.settings.schedules[file.path] = {
-      ...schedule,
-      enabled: snapshot.enabled,
-      stage: snapshot.stage,
-      nextDate: snapshot.nextDate,
-      lastDate: snapshot.lastDate,
-      history: snapshot.history ? [...snapshot.history] : [],
-    };
+      this.settings.schedules[file.path] = {
+        ...schedule,
+        enabled: snapshot.enabled,
+        stage: snapshot.stage,
+        nextDate: snapshot.nextDate,
+        lastDate: snapshot.lastDate,
+        history: snapshot.history ? [...snapshot.history] : [],
+      };
 
-    if (!snapshot.hadLogEntry) {
-      this.settings.reviewLog = removeActivityEntry(this.settings.reviewLog, {
-        date: snapshot.completedDate,
-        filePath: file.path,
-        stage: snapshot.completedStage,
-      });
-    }
-    delete this.settings.undoSnapshots[file.path];
-    await this.saveSettings();
+      if (!snapshot.hadLogEntry) {
+        this.settings.reviewLog = removeActivityEntry(this.settings.reviewLog, {
+          date: snapshot.completedDate,
+          filePath: file.path,
+          stage: snapshot.completedStage,
+        });
+      }
+      delete this.settings.undoSnapshots[file.path];
+      return { changed: true, value: undefined };
+    });
     new Notice(this.i18n.t("reviewUndoNotice", { note: file.basename }));
     await this.refreshStatus();
   }
@@ -621,27 +644,39 @@ export default class EbbinghausReviewPlugin extends Plugin {
   }
 
   async checkAndNotify(ignoreTime: boolean): Promise<void> {
-    await this.refreshStatus();
-
     const now = new Date();
     const today = toDateKey(now);
-    if (this.settings.lastNotificationDate === today) return;
-    if (!ignoreTime && !this.isNotificationTime(now)) return;
+    const notification = await this.mutateSettings(() => {
+      if (this.settings.lastNotificationDate === today) {
+        return { changed: false, value: null };
+      }
+      if (!ignoreTime && !this.isNotificationTime(now)) {
+        return { changed: false, value: null };
+      }
 
-    const reviews = this.getDueReviews(now);
-    if (reviews.length === 0) return;
+      const reviews = this.getDueReviews(now);
+      if (reviews.length === 0) return { changed: false, value: null };
 
-    const message = this.i18n.t("dueNotification", { count: reviews.length });
+      this.settings.lastNotificationDate = today;
+      return {
+        changed: true,
+        value: {
+          message: this.i18n.t("dueNotification", { count: reviews.length }),
+          systemNotifications: this.settings.systemNotifications,
+        },
+      };
+    });
+    await this.refreshStatus();
+    if (!notification) return;
+
+    const { message, systemNotifications } = notification;
     new Notice(message, 8000);
 
-    if (this.settings.systemNotifications && typeof Notification !== "undefined") {
+    if (systemNotifications && typeof Notification !== "undefined") {
       if (Notification.permission === "granted") {
         new Notification("Ebbinghaus Review", { body: message });
       }
     }
-
-    this.settings.lastNotificationDate = today;
-    await this.saveSettings();
   }
 
   isNotificationTime(now: Date): boolean {
@@ -664,25 +699,36 @@ export default class EbbinghausReviewPlugin extends Plugin {
   }
 
   async migrateLegacySchedules(): Promise<{ imported: number; cleaned: number }> {
-    const prefixes = [...new Set([this.settings.propertyPrefix, DEFAULT_SETTINGS.propertyPrefix])];
-    const candidates: Array<{ file: TFile; fields: ReturnType<typeof getLegacyPropertyNames> }> = [];
-    let imported = 0;
+    const { imported, candidates } = await this.mutateSettings(() => {
+      const prefixes = [...new Set([
+        this.settings.propertyPrefix,
+        DEFAULT_SETTINGS.propertyPrefix,
+      ])];
+      const pending: Array<{
+        file: TFile;
+        fields: ReturnType<typeof getLegacyPropertyNames>;
+      }> = [];
+      let count = 0;
 
-    for (const file of this.app.vault.getMarkdownFiles()) {
-      const frontmatter = this.app.metadataCache.getFileCache(file)?.frontmatter;
-      for (const prefix of prefixes) {
-        const fields = getLegacyPropertyNames(prefix);
-        if (!hasLegacyProperties(frontmatter, fields)) continue;
-        const legacy = readLegacySchedule(frontmatter, fields);
-        if (!this.settings.schedules[file.path] && legacy) {
-          this.settings.schedules[file.path] = legacy;
-          imported += 1;
+      for (const file of this.app.vault.getMarkdownFiles()) {
+        const frontmatter = this.app.metadataCache.getFileCache(file)?.frontmatter;
+        for (const prefix of prefixes) {
+          const fields = getLegacyPropertyNames(prefix);
+          if (!hasLegacyProperties(frontmatter, fields)) continue;
+          const legacy = readLegacySchedule(frontmatter, fields);
+          if (!this.settings.schedules[file.path] && legacy) {
+            this.settings.schedules[file.path] = legacy;
+            count += 1;
+          }
+          if (this.settings.schedules[file.path]) pending.push({ file, fields });
         }
-        if (this.settings.schedules[file.path]) candidates.push({ file, fields });
       }
-    }
 
-    if (imported > 0) await this.saveSettings();
+      return {
+        changed: count > 0,
+        value: { imported: count, candidates: pending },
+      };
+    });
 
     let cleaned = 0;
     for (const { file, fields } of candidates) {
@@ -699,53 +745,60 @@ export default class EbbinghausReviewPlugin extends Plugin {
       if (path === oldPath) return newPath;
       return path.startsWith(`${oldPath}/`) ? `${newPath}${path.slice(oldPath.length)}` : null;
     };
-    let changed = false;
-
-    for (const [path, schedule] of Object.entries(this.settings.schedules)) {
-      const target = remap(path);
-      if (!target) continue;
-      delete this.settings.schedules[path];
-      this.settings.schedules[target] = schedule;
-      changed = true;
-    }
-    for (const [path, snapshot] of Object.entries(this.settings.undoSnapshots)) {
-      const target = remap(path);
-      if (!target) continue;
-      delete this.settings.undoSnapshots[path];
-      this.settings.undoSnapshots[target] = snapshot;
-      changed = true;
-    }
-    this.settings.reviewLog = this.settings.reviewLog.map((entry) => {
-      const target = remap(entry.filePath);
-      if (!target) return entry;
-      changed = true;
-      return { ...entry, filePath: target };
+    await this.mutateSettings(() => {
+      let changed = false;
+      for (const [path, schedule] of Object.entries(this.settings.schedules)) {
+        const target = remap(path);
+        if (!target) continue;
+        delete this.settings.schedules[path];
+        this.settings.schedules[target] = schedule;
+        changed = true;
+      }
+      for (const [path, snapshot] of Object.entries(this.settings.undoSnapshots)) {
+        const target = remap(path);
+        if (!target) continue;
+        delete this.settings.undoSnapshots[path];
+        this.settings.undoSnapshots[target] = snapshot;
+        changed = true;
+      }
+      this.settings.reviewLog = this.settings.reviewLog.map((entry) => {
+        const target = remap(entry.filePath);
+        if (!target) return entry;
+        changed = true;
+        return { ...entry, filePath: target };
+      });
+      return { changed, value: undefined };
     });
-
-    if (changed) await this.saveSettings();
     await this.refreshStatus();
   }
 
   private async handleDeletedPath(path: string): Promise<void> {
     const matches = (candidate: string): boolean =>
       candidate === path || candidate.startsWith(`${path}/`);
-    let changed = false;
-    for (const schedulePath of Object.keys(this.settings.schedules)) {
-      if (!matches(schedulePath)) continue;
-      delete this.settings.schedules[schedulePath];
-      changed = true;
-    }
-    for (const snapshotPath of Object.keys(this.settings.undoSnapshots)) {
-      if (!matches(snapshotPath)) continue;
-      delete this.settings.undoSnapshots[snapshotPath];
-      changed = true;
-    }
-    if (changed) await this.saveSettings();
+    await this.mutateSettings(() => {
+      let changed = false;
+      for (const schedulePath of Object.keys(this.settings.schedules)) {
+        if (!matches(schedulePath)) continue;
+        delete this.settings.schedules[schedulePath];
+        changed = true;
+      }
+      for (const snapshotPath of Object.keys(this.settings.undoSnapshots)) {
+        if (!matches(snapshotPath)) continue;
+        delete this.settings.undoSnapshots[snapshotPath];
+        changed = true;
+      }
+      return { changed, value: undefined };
+    });
     await this.refreshStatus();
   }
 
   async loadSettings(): Promise<void> {
     const loaded = (await this.loadData()) as Partial<EbbinghausReviewSettings> | null;
+    this.applyLoadedSettings(loaded);
+    this.knownSettingsFingerprint = settingsFingerprint(loaded);
+  }
+
+  private applyLoadedSettings(loaded: Partial<EbbinghausReviewSettings> | null): void {
     this.settings = Object.assign({}, DEFAULT_SETTINGS, loaded ?? {});
     this.settings.reviewLog = Array.isArray(loaded?.reviewLog)
       ? loaded.reviewLog.filter((entry): entry is ReviewActivityEntry =>
@@ -776,8 +829,85 @@ export default class EbbinghausReviewPlugin extends Plugin {
       : DEFAULT_SETTINGS.propertyPrefix;
   }
 
-  async saveSettings(): Promise<void> {
+  private async persistSettingsLocked(): Promise<void> {
     await this.saveData(this.settings);
+    this.knownSettingsFingerprint = settingsFingerprint(this.settings);
+  }
+
+  private enqueueSettingsOperation<T>(operation: () => Promise<T>): Promise<T> {
+    const result = this.settingsQueue.then(operation, operation);
+    this.settingsQueue = result.then(() => undefined, () => undefined);
+    return result;
+  }
+
+  private async reloadSettingsIfChangedLocked(): Promise<boolean> {
+    const loaded = (await this.loadData()) as Partial<EbbinghausReviewSettings> | null;
+    const fingerprint = settingsFingerprint(loaded);
+    if (fingerprint === this.knownSettingsFingerprint) return false;
+    this.applyLoadedSettings(loaded);
+    this.knownSettingsFingerprint = fingerprint;
+    return true;
+  }
+
+  private async mutateSettings<T>(
+    mutation: () => SettingsMutation<T> | Promise<SettingsMutation<T>>,
+  ): Promise<T> {
+    return this.enqueueSettingsOperation(async () => {
+      await this.reloadSettingsIfChangedLocked();
+      let result = await mutation();
+      if (result.changed) {
+        const latest = (await this.loadData()) as Partial<EbbinghausReviewSettings> | null;
+        const latestFingerprint = settingsFingerprint(latest);
+        if (latestFingerprint !== this.knownSettingsFingerprint) {
+          this.applyLoadedSettings(latest);
+          this.knownSettingsFingerprint = latestFingerprint;
+          result = await mutation();
+        }
+      }
+      if (result.changed) await this.persistSettingsLocked();
+      return result.value;
+    });
+  }
+
+  async updateSetting<K extends UserSettingKey>(
+    key: K,
+    value: EbbinghausReviewSettings[K],
+  ): Promise<void> {
+    await this.mutateSettings(() => {
+      const changed = this.settings[key] !== value;
+      this.settings[key] = value;
+      return { changed, value: undefined };
+    });
+  }
+
+  private startSettingsSync(): void {
+    if (this.settingsSyncIntervalId !== null) {
+      window.clearInterval(this.settingsSyncIntervalId);
+    }
+    this.settingsSyncIntervalId = window.setInterval(
+      () => void this.synchronizeSettingsFromDisk(),
+      SETTINGS_SYNC_INTERVAL_MS,
+    );
+    this.registerInterval(this.settingsSyncIntervalId);
+  }
+
+  private async synchronizeSettingsFromDisk(): Promise<void> {
+    try {
+      const { changed, checkIntervalChanged } = await this.enqueueSettingsOperation(async () => {
+        const previousCheckInterval = this.settings.checkIntervalMinutes;
+        const reloaded = await this.reloadSettingsIfChangedLocked();
+        return {
+          changed: reloaded,
+          checkIntervalChanged: reloaded &&
+            previousCheckInterval !== this.settings.checkIntervalMinutes,
+        };
+      });
+      if (!changed) return;
+      if (checkIntervalChanged) this.updateCheckInterval();
+      await this.refreshStatus();
+    } catch (error) {
+      console.error("Ebbinghaus Review: failed to reload synced settings", error);
+    }
   }
 
   updateCheckInterval(): void {
@@ -847,8 +977,7 @@ class EbbinghausReviewSettingTab extends PluginSettingTab {
             return;
           }
           text.inputEl.removeClass("ebbinghaus-review-invalid");
-          this.plugin.settings.intervals = value;
-          await this.plugin.saveSettings();
+          await this.plugin.updateSetting("intervals", value);
         }),
       );
 
@@ -858,8 +987,7 @@ class EbbinghausReviewSettingTab extends PluginSettingTab {
       .addText((text) => {
         text.inputEl.type = "time";
         text.setValue(this.plugin.settings.notificationTime).onChange(async (value) => {
-          this.plugin.settings.notificationTime = value;
-          await this.plugin.saveSettings();
+          await this.plugin.updateSetting("notificationTime", value);
         });
       });
 
@@ -872,8 +1000,7 @@ class EbbinghausReviewSettingTab extends PluginSettingTab {
         text.setValue(String(this.plugin.settings.checkIntervalMinutes)).onChange(async (value) => {
           const minutes = Number(value);
           if (!Number.isSafeInteger(minutes) || minutes < 1) return;
-          this.plugin.settings.checkIntervalMinutes = minutes;
-          await this.plugin.saveSettings();
+          await this.plugin.updateSetting("checkIntervalMinutes", minutes);
           this.plugin.updateCheckInterval();
         });
       });
@@ -883,8 +1010,7 @@ class EbbinghausReviewSettingTab extends PluginSettingTab {
       .setDesc(this.plugin.i18n.t("keepPanelDesc"))
       .addToggle((toggle) =>
         toggle.setValue(this.plugin.settings.keepStatusPanelOpen).onChange(async (value) => {
-          this.plugin.settings.keepStatusPanelOpen = value;
-          await this.plugin.saveSettings();
+          await this.plugin.updateSetting("keepStatusPanelOpen", value);
           if (value) await this.plugin.ensureStatusView(true);
         }),
       );
@@ -894,8 +1020,7 @@ class EbbinghausReviewSettingTab extends PluginSettingTab {
       .setDesc(this.plugin.i18n.t("notifyOnStartupDesc"))
       .addToggle((toggle) =>
         toggle.setValue(this.plugin.settings.notifyOnStartup).onChange(async (value) => {
-          this.plugin.settings.notifyOnStartup = value;
-          await this.plugin.saveSettings();
+          await this.plugin.updateSetting("notifyOnStartup", value);
         }),
       );
 
@@ -918,8 +1043,7 @@ class EbbinghausReviewSettingTab extends PluginSettingTab {
               value = false;
             }
           }
-          this.plugin.settings.systemNotifications = value;
-          await this.plugin.saveSettings();
+          await this.plugin.updateSetting("systemNotifications", value);
         }),
       );
 
