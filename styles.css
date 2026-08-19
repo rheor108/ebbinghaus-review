@@ -206,13 +206,19 @@
   padding: clamp(24px, 5vw, 64px);
 }
 
-/* Keep the end of every plugin view above Obsidian's floating mobile navbar. */
-.is-mobile .ebbinghaus-dashboard,
-.is-mobile .ebbinghaus-status-panel {
-  --ebbinghaus-mobile-bottom-clearance: calc(112px + env(safe-area-inset-bottom, 0px));
-
-  padding-bottom: var(--ebbinghaus-mobile-bottom-clearance);
-  scroll-padding-bottom: var(--ebbinghaus-mobile-bottom-clearance);
+/*
+ * Obsidian offsets phone views below its floating header while leaving their
+ * height at 100%. Fit plugin views into Obsidian's remaining viewport so the
+ * floating navbar never covers their scrollable content.
+ */
+body.is-phone.is-floating-nav .workspace-leaf-content .view-content.ebbinghaus-dashboard,
+body.is-phone.is-floating-nav .workspace-leaf-content .view-content.ebbinghaus-status-panel,
+body.is-phone.auto-full-screen .workspace-leaf-content .view-content.ebbinghaus-dashboard,
+body.is-phone.auto-full-screen .workspace-leaf-content .view-content.ebbinghaus-status-panel {
+  height: calc(100% - var(--view-top-spacing) - var(--view-bottom-spacing));
+  min-height: 0;
+  padding-bottom: var(--size-4-4);
+  scroll-padding-bottom: var(--size-4-4);
 }
 
 .ebbinghaus-dashboard-header h2 {
