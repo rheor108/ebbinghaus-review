@@ -1,7 +1,7 @@
 {
   "id": "ebbinghaus-review",
   "name": "Ebbinghaus Review",
-  "version": "0.6.2",
+  "version": "0.6.3",
   "minAppVersion": "1.8.7",
   "description": "Schedule per-note reviews with configurable Ebbinghaus-style intervals and due-date reminders.",
   "author": "seungbum",
