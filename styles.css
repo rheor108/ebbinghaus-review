@@ -206,6 +206,21 @@
   padding: clamp(24px, 5vw, 64px);
 }
 
+/*
+ * Obsidian offsets phone views below its floating header while leaving their
+ * height at 100%. Fit plugin views into Obsidian's remaining viewport so the
+ * floating navbar never covers their scrollable content.
+ */
+body.is-phone.is-floating-nav .workspace-leaf-content .view-content.ebbinghaus-dashboard,
+body.is-phone.is-floating-nav .workspace-leaf-content .view-content.ebbinghaus-status-panel,
+body.is-phone.auto-full-screen .workspace-leaf-content .view-content.ebbinghaus-dashboard,
+body.is-phone.auto-full-screen .workspace-leaf-content .view-content.ebbinghaus-status-panel {
+  height: calc(100% - var(--view-top-spacing) - var(--view-bottom-spacing));
+  min-height: 0;
+  padding-bottom: var(--size-4-4);
+  scroll-padding-bottom: var(--size-4-4);
+}
+
 .ebbinghaus-dashboard-header h2 {
   font-size: 2em;
   margin: var(--size-4-1) 0 var(--size-4-2);

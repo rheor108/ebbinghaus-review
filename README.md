@@ -15,6 +15,7 @@ Schedule spaced reviews for each note, see what is due today or overdue, and tra
 - Detect review-data changes from another device in an iCloud-based vault without restarting Obsidian.
 - Receive in-app and optional operating-system notifications.
 - Use the same plugin on desktop and mobile.
+- Keep the last card and controls clear of Obsidian's floating mobile navigation.
 - Automatically match Obsidian's interface language across all 46 completed app locales; unknown future locales fall back to English.
 
 ### Screenshots
