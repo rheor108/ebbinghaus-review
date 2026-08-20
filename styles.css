@@ -54,6 +54,20 @@
   color: var(--color-green);
 }
 
+.ebbinghaus-open-dashboard {
+  align-items: center;
+  display: flex;
+  gap: var(--size-4-2);
+  justify-content: center;
+  margin-bottom: var(--size-4-3);
+  width: 100%;
+}
+
+.ebbinghaus-open-dashboard-icon {
+  align-items: center;
+  display: inline-flex;
+}
+
 .ebbinghaus-progress-card,
 .ebbinghaus-status-facts,
 .ebbinghaus-schedule-preview,

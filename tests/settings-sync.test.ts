@@ -33,3 +33,10 @@ test("settings fingerprint changes with a synced review completion", () => {
 
   assert.notEqual(settingsFingerprint(before), settingsFingerprint(after));
 });
+
+test("settings fingerprint changes with a language preference", () => {
+  assert.notEqual(
+    settingsFingerprint({ language: "auto" }),
+    settingsFingerprint({ language: "ko" }),
+  );
+});
