@@ -1,6 +1,12 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { createI18n, resolveLocale, SUPPORTED_LOCALES } from "../src/i18n";
+import {
+  createI18n,
+  localeDisplayName,
+  normalizeLocalePreference,
+  resolveLocale,
+  SUPPORTED_LOCALES,
+} from "../src/i18n";
 import { EN_MESSAGES, type MessageKey } from "../src/messages";
 import { TRANSLATIONS } from "../src/translations";
 
@@ -38,6 +44,15 @@ test("resolves exact, normalized, and base locales with an English fallback", ()
 
 test("formats translated messages and falls back to English", () => {
   assert.equal(createI18n("ko").t("inDays", { count: 3 }), "3일 후");
+  assert.equal(createI18n("ko").t("languageSetting"), "언어");
   assert.equal(createI18n("unknown").t("reviewStatus"), "Review status");
   assert.doesNotThrow(() => createI18n("kh").formatWeekday(new Date(2026, 7, 18)));
+});
+
+test("validates language preferences and builds localized option labels", () => {
+  assert.equal(normalizeLocalePreference("auto"), "auto");
+  assert.equal(normalizeLocalePreference("ko"), "ko");
+  assert.equal(normalizeLocalePreference("fr-CA"), "auto");
+  assert.equal(normalizeLocalePreference(null), "auto");
+  assert.ok(localeDisplayName("fr", "ko").length > 0);
 });

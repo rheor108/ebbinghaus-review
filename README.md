@@ -10,6 +10,7 @@ Schedule spaced reviews for each note, see what is due today or overdue, and tra
 
 - Start a configurable `1, 3, 7, 14, 30, 60, 120 day` review schedule for any note.
 - Review today's notes, overdue notes, progress, and seven-day activity from a dedicated dashboard.
+- Open the study dashboard directly from the current-note review status panel.
 - Mark a review complete, postpone it until tomorrow, or undo an accidental completion.
 - Keep review data in plugin storage so note properties stay clean.
 - Detect review-data changes from another device in an iCloud-based vault without restarting Obsidian.
@@ -17,6 +18,7 @@ Schedule spaced reviews for each note, see what is due today or overdue, and tra
 - Use the same plugin on desktop and mobile.
 - Keep the last card and controls clear of Obsidian's floating mobile navigation.
 - Automatically match Obsidian's interface language across all 46 completed app locales; unknown future locales fall back to English.
+- Follow Obsidian's language by default or choose any supported language in the plugin settings.
 
 ### Screenshots
 

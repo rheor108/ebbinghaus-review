@@ -9,6 +9,8 @@ export const SUPPORTED_LOCALES = [
 ] as const;
 
 export type SupportedLocale = typeof SUPPORTED_LOCALES[number];
+export const AUTO_LOCALE = "auto" as const;
+export type LocalePreference = typeof AUTO_LOCALE | SupportedLocale;
 
 const SUPPORTED_LOCALE_SET = new Set<string>(SUPPORTED_LOCALES);
 const SUPPORTED_LOCALE_ALIASES = new Map(
@@ -28,6 +30,22 @@ export function resolveLocale(locale: string): SupportedLocale {
   const baseAlias = SUPPORTED_LOCALE_ALIASES.get(base.toLowerCase());
   if (baseAlias) return baseAlias;
   return "en";
+}
+
+export function normalizeLocalePreference(value: unknown): LocalePreference {
+  if (value === AUTO_LOCALE) return AUTO_LOCALE;
+  return typeof value === "string" && SUPPORTED_LOCALE_SET.has(value)
+    ? value as SupportedLocale
+    : AUTO_LOCALE;
+}
+
+export function localeDisplayName(locale: SupportedLocale, displayLocale: string): string {
+  const targetLocale = INTL_LOCALE_OVERRIDES[locale] ?? locale;
+  try {
+    return new Intl.DisplayNames([displayLocale], { type: "language" }).of(targetLocale) ?? locale;
+  } catch {
+    return locale;
+  }
 }
 
 export class I18n {

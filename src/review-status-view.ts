@@ -1,4 +1,4 @@
-import { ItemView, TFile, WorkspaceLeaf } from "obsidian";
+import { ItemView, setIcon, TFile, WorkspaceLeaf } from "obsidian";
 import type EbbinghausReviewPlugin from "./main";
 import type { I18n } from "./i18n";
 
@@ -59,6 +59,17 @@ export class ReviewStatusView extends ItemView {
     });
     titleBlock.createEl("h3", {
       text: file?.basename ?? this.plugin.i18n.t("noMarkdownNoteOpen"),
+    });
+
+    const dashboard = content.createEl("button", {
+      cls: "ebbinghaus-open-dashboard",
+      attr: { type: "button" },
+    });
+    const dashboardIcon = dashboard.createSpan({ cls: "ebbinghaus-open-dashboard-icon" });
+    setIcon(dashboardIcon, "layout-dashboard");
+    dashboard.createSpan({ text: this.plugin.i18n.t("commandOpenDashboard") });
+    dashboard.addEventListener("click", () => {
+      void this.plugin.activateDashboard("today");
     });
 
     if (!file) {

@@ -1,5 +1,6 @@
 import {
   App,
+  type Command,
   getLanguage,
   Notice,
   Plugin,
@@ -42,10 +43,21 @@ import {
   readLegacySchedule,
   type StoredReviewSchedule,
 } from "./review-storage";
-import { createI18n, type I18n } from "./i18n";
+import {
+  AUTO_LOCALE,
+  createI18n,
+  localeDisplayName,
+  normalizeLocalePreference,
+  SUPPORTED_LOCALES,
+  type I18n,
+  type LocalePreference,
+} from "./i18n";
+import type { MessageKey } from "./messages";
 import { settingsFingerprint } from "./settings-sync";
+import { pluginCommandName } from "./command-label";
 
 interface EbbinghausReviewSettings {
+  language: LocalePreference;
   intervals: string;
   /** Kept only to locate and remove properties written by versions before 0.5.0. */
   propertyPrefix: string;
@@ -121,6 +133,7 @@ export interface ReviewStep {
 }
 
 const DEFAULT_SETTINGS: EbbinghausReviewSettings = {
+  language: AUTO_LOCALE,
   intervals: "1, 3, 7, 14, 30, 60, 120",
   propertyPrefix: "ebbinghaus_review",
   checkIntervalMinutes: 30,
@@ -160,9 +173,13 @@ function isCompletionUndoSnapshot(value: unknown): value is CompletionUndoSnapsh
 
 export default class EbbinghausReviewPlugin extends Plugin {
   settings: EbbinghausReviewSettings = DEFAULT_SETTINGS;
-  readonly i18n: I18n = createI18n(getLanguage());
+  i18n: I18n = createI18n(getLanguage());
   private dueStatusBar: HTMLElement | null = null;
   private noteStatusBar: HTMLElement | null = null;
+  private dueRibbonIcon: HTMLElement | null = null;
+  private statusRibbonIcon: HTMLElement | null = null;
+  private settingTab: EbbinghausReviewSettingTab | null = null;
+  private readonly localizedCommands: Array<{ command: Command; key: MessageKey }> = [];
   private checkIntervalId: number | null = null;
   private settingsSyncIntervalId: number | null = null;
   private knownSettingsFingerprint = "";
@@ -172,6 +189,7 @@ export default class EbbinghausReviewPlugin extends Plugin {
 
   async onload(): Promise<void> {
     await this.loadSettings();
+    this.applyConfiguredLanguage();
 
     this.registerView(
       REVIEW_STATUS_VIEW_TYPE,
@@ -192,69 +210,61 @@ export default class EbbinghausReviewPlugin extends Plugin {
     this.noteStatusBar.setAttribute("aria-label", this.i18n.t("openStatusA11y"));
     this.noteStatusBar.addEventListener("click", () => void this.activateStatusView());
 
-    this.addRibbonIcon("calendar-clock", this.i18n.t("todayReviewList"), () => {
+    this.dueRibbonIcon = this.addRibbonIcon("calendar-clock", this.i18n.t("todayReviewList"), () => {
       this.openDueReviews();
     });
 
-    this.addRibbonIcon("chart-no-axes-column-increasing", this.i18n.t("currentReviewStatus"), () => {
+    this.statusRibbonIcon = this.addRibbonIcon("chart-no-axes-column-increasing", this.i18n.t("currentReviewStatus"), () => {
       void this.activateStatusView();
     });
 
-    this.addCommand({
+    this.addLocalizedCommand("commandStartRestart", {
       id: "start-review-schedule",
-      name: this.i18n.t("commandStartRestart"),
       callback: () => void this.startScheduleForActiveFile(),
     });
 
-    this.addCommand({
+    this.addLocalizedCommand("commandMarkReviewed", {
       id: "mark-current-note-reviewed",
-      name: this.i18n.t("commandMarkReviewed"),
       callback: () => void this.completeActiveReview(),
     });
 
-    this.addCommand({
+    this.addLocalizedCommand("commandUndo", {
       id: "undo-current-note-review",
-      name: this.i18n.t("commandUndo"),
       callback: () => void this.undoActiveReview(),
     });
 
-    this.addCommand({
+    this.addLocalizedCommand("commandSnooze", {
       id: "snooze-current-note-one-day",
-      name: this.i18n.t("commandSnooze"),
       callback: () => void this.snoozeActiveReview(),
     });
 
-    this.addCommand({
+    this.addLocalizedCommand("commandOpenToday", {
       id: "open-due-reviews",
-      name: this.i18n.t("commandOpenToday"),
       callback: () => this.openDueReviews(),
     });
 
-    this.addCommand({
+    this.addLocalizedCommand("commandOpenStatus", {
       id: "open-review-status",
-      name: this.i18n.t("commandOpenStatus"),
       callback: () => void this.activateStatusView(),
     });
 
-    this.addCommand({
+    this.addLocalizedCommand("commandOpenStats", {
       id: "open-study-statistics",
-      name: this.i18n.t("commandOpenStats"),
       callback: () => void this.activateDashboard("statistics"),
     });
 
-    this.addCommand({
+    this.addLocalizedCommand("commandOpenDashboard", {
       id: "open-study-dashboard",
-      name: this.i18n.t("commandOpenDashboard"),
       callback: () => void this.activateDashboard("today"),
     });
 
-    this.addCommand({
+    this.addLocalizedCommand("commandOpenOverdue", {
       id: "open-overdue-reviews",
-      name: this.i18n.t("commandOpenOverdue"),
       callback: () => void this.activateDashboard("overdue"),
     });
 
-    this.addSettingTab(new EbbinghausReviewSettingTab(this.app, this));
+    this.settingTab = new EbbinghausReviewSettingTab(this.app, this);
+    this.addSettingTab(this.settingTab);
 
     this.updateCheckInterval();
     this.startSettingsSync();
@@ -275,6 +285,37 @@ export default class EbbinghausReviewPlugin extends Plugin {
         void this.ensureStatusView(true);
       }
     }));
+  }
+
+  private addLocalizedCommand(key: MessageKey, command: Omit<Command, "name">): void {
+    const registered = this.addCommand({ ...command, name: this.i18n.t(key) });
+    this.localizedCommands.push({ command: registered, key });
+  }
+
+  private applyConfiguredLanguage(): void {
+    const locale = this.settings.language === AUTO_LOCALE
+      ? getLanguage()
+      : this.settings.language;
+    this.i18n = createI18n(locale);
+  }
+
+  private refreshLocalizedChrome(): void {
+    this.dueStatusBar?.setAttribute("aria-label", this.i18n.t("openTodayReviewsA11y"));
+    this.noteStatusBar?.setAttribute("aria-label", this.i18n.t("openStatusA11y"));
+    this.dueRibbonIcon?.setAttribute("aria-label", this.i18n.t("todayReviewList"));
+    this.statusRibbonIcon?.setAttribute("aria-label", this.i18n.t("currentReviewStatus"));
+    for (const { command, key } of this.localizedCommands) {
+      command.name = pluginCommandName(this.manifest.name, this.i18n.t(key));
+    }
+  }
+
+  async setLanguagePreference(language: LocalePreference): Promise<void> {
+    await this.updateSetting("language", language);
+    this.applyConfiguredLanguage();
+    this.refreshLocalizedChrome();
+    this.settingTab?.display();
+    await this.refreshStatus();
+    this.app.workspace.trigger("layout-change");
   }
 
   onunload(): void {
@@ -800,6 +841,7 @@ export default class EbbinghausReviewPlugin extends Plugin {
 
   private applyLoadedSettings(loaded: Partial<EbbinghausReviewSettings> | null): void {
     this.settings = Object.assign({}, DEFAULT_SETTINGS, loaded ?? {});
+    this.settings.language = normalizeLocalePreference(loaded?.language);
     this.settings.reviewLog = Array.isArray(loaded?.reviewLog)
       ? loaded.reviewLog.filter((entry): entry is ReviewActivityEntry =>
         typeof entry?.date === "string" &&
@@ -893,18 +935,26 @@ export default class EbbinghausReviewPlugin extends Plugin {
 
   private async synchronizeSettingsFromDisk(): Promise<void> {
     try {
-      const { changed, checkIntervalChanged } = await this.enqueueSettingsOperation(async () => {
+      const { changed, checkIntervalChanged, languageChanged } = await this.enqueueSettingsOperation(async () => {
         const previousCheckInterval = this.settings.checkIntervalMinutes;
+        const previousLanguage = this.settings.language;
         const reloaded = await this.reloadSettingsIfChangedLocked();
         return {
           changed: reloaded,
           checkIntervalChanged: reloaded &&
             previousCheckInterval !== this.settings.checkIntervalMinutes,
+          languageChanged: reloaded && previousLanguage !== this.settings.language,
         };
       });
       if (!changed) return;
       if (checkIntervalChanged) this.updateCheckInterval();
+      if (languageChanged) {
+        this.applyConfiguredLanguage();
+        this.refreshLocalizedChrome();
+        this.settingTab?.display();
+      }
       await this.refreshStatus();
+      if (languageChanged) this.app.workspace.trigger("layout-change");
     } catch (error) {
       console.error("Ebbinghaus Review: failed to reload synced settings", error);
     }
@@ -966,6 +1016,30 @@ class EbbinghausReviewSettingTab extends PluginSettingTab {
   display(): void {
     this.containerEl.empty();
     this.containerEl.createEl("h2", { text: "Ebbinghaus Review" });
+
+    new Setting(this.containerEl)
+      .setName(this.plugin.i18n.t("languageSetting"))
+      .setDesc(this.plugin.i18n.t("languageSettingDesc"))
+      .addDropdown((dropdown) => {
+        const obsidianLocale = createI18n(getLanguage()).locale;
+        const obsidianLanguage = localeDisplayName(obsidianLocale, this.plugin.i18n.intlLocale);
+        dropdown.addOption(
+          AUTO_LOCALE,
+          this.plugin.i18n.t("followObsidianLanguage", { language: obsidianLanguage }),
+        );
+        const collator = new Intl.Collator(this.plugin.i18n.intlLocale);
+        const localeOptions = SUPPORTED_LOCALES
+          .map((locale) => ({
+            locale,
+            name: localeDisplayName(locale, this.plugin.i18n.intlLocale),
+          }))
+          .sort((first, second) => collator.compare(first.name, second.name));
+        for (const { locale, name } of localeOptions) dropdown.addOption(locale, name);
+        dropdown.setValue(this.plugin.settings.language).onChange(async (value) => {
+          const language = normalizeLocalePreference(value);
+          await this.plugin.setLanguagePreference(language);
+        });
+      });
 
     new Setting(this.containerEl)
       .setName(this.plugin.i18n.t("reviewIntervalsSetting"))
