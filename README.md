@@ -19,16 +19,23 @@ Schedule spaced reviews for each note, see what is due today or overdue, and tra
 - Keep the last card and controls clear of Obsidian's floating mobile navigation.
 - Automatically match Obsidian's interface language across all 46 completed app locales; unknown future locales fall back to English.
 - Follow Obsidian's language by default or choose any supported language in the plugin settings.
+- Find every plugin command by searching for the stable `Ebbinghaus Review` prefix in the command palette, regardless of the selected interface language.
 
 ### Screenshots
 
-#### Dashboard and current-note status
+#### Find commands by plugin name
 
-![Study dashboard and current-note review status](docs/images/review-status.png)
+Open the command palette with `Cmd+P` on macOS or `Ctrl+P` on Windows/Linux, then type `Ebbinghaus Review`. Every plugin command keeps the `Ebbinghaus Review:` prefix even when you change the plugin interface language.
+
+![Search for Ebbinghaus Review commands in the Obsidian command palette](docs/images/en/command-palette.png)
+
+#### Current-note review status
+
+![Current-note review status in English](docs/images/en/review-status.png)
 
 #### Study statistics
 
-![Ebbinghaus Review study statistics](docs/images/review-statistics.png)
+![Ebbinghaus Review study statistics in English](docs/images/en/review-statistics.png)
 
 ### Language support
 
@@ -39,7 +46,7 @@ Translations are machine-assisted. Korean has completed a manual editorial revie
 ### Usage
 
 1. Open a Markdown note.
-2. Run **Start or restart the review schedule for the current note** from the command palette.
+2. Open the command palette, search for `Ebbinghaus Review`, and run **Ebbinghaus Review: Start or restart the review schedule for the current note**.
 3. Use the status bar or ribbon icons to open the current-note panel and study dashboard.
 4. Select **Done** after studying, or postpone the review until tomorrow.
 5. Check the **Study statistics** tab for your streak and recent activity.
@@ -53,6 +60,6 @@ npm install
 npm run check
 ```
 
-Run `npm run audit:i18n` to validate all 4,708 localized messages independently.
+Run `npm run audit:i18n` to validate all 4,840 localized messages independently.
 
 Copy `main.js`, `manifest.json`, and `styles.css` into a test vault's `.obsidian/plugins/ebbinghaus-review/` directory, then enable **Ebbinghaus Review** under **Settings → Community plugins**.

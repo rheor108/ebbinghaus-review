@@ -8,17 +8,23 @@
 
 ## 사용 화면
 
-### 학습 대시보드와 현재 노트 복습 현황
+### 명령 팔레트에서 플러그인 이름으로 검색
 
-오늘 복습할 노트와 학습 통계를 한곳에서 확인하면서, 오른쪽 패널에서 현재 노트의 진행률과 다음 복습일을 볼 수 있습니다.
+macOS에서는 `Cmd+P`, Windows/Linux에서는 `Ctrl+P`로 명령 팔레트를 연 다음 `Ebbinghaus Review`를 입력하세요. 플러그인 인터페이스 언어를 바꿔도 모든 명령에는 검색하기 쉬운 `Ebbinghaus Review:` 접두사가 유지됩니다.
 
-![학습 대시보드와 현재 노트 복습 현황](docs/images/review-status.png)
+![Obsidian 명령 팔레트에서 Ebbinghaus Review 명령 검색](docs/images/ko/command-palette.png)
+
+### 현재 노트 복습 현황
+
+오른쪽 패널에서 현재 노트의 진행률과 다음 복습일을 확인하고, 버튼 한 번으로 학습 대시보드를 열 수 있습니다.
+
+![현재 노트의 복습 현황 화면](docs/images/ko/review-status.png)
 
 ### 학습 통계
 
 오늘 완료한 복습 수, 연속 학습일, 진행 중인 노트와 최근 7일 복습량을 확인할 수 있습니다.
 
-![Ebbinghaus Review 학습 통계 화면](docs/images/review-statistics.png)
+![Ebbinghaus Review 학습 통계 화면](docs/images/ko/review-statistics.png)
 
 ## 주요 기능
 
@@ -41,6 +47,7 @@
 - 모바일 하단 내비게이션에 마지막 카드와 조작 버튼이 가리지 않도록 안전 여백 적용
 - Obsidian에서 앱 번역이 완료된 46개 언어를 자동 감지하고, 알 수 없는 새 언어는 영어로 표시
 - 플러그인 설정에서 Obsidian 언어 자동 추종 또는 지원 언어 직접 선택
+- 선택한 언어와 관계없이 명령 팔레트에서 `Ebbinghaus Review` 접두사로 모든 명령 검색
 
 번역은 기계 번역을 보조적으로 사용했습니다. 한국어는 수동 문장 검수를 완료했으며, 나머지 언어는 전체 구조 검사와 주요 용어 교정을 마쳤지만 원어민 검수가 더 필요합니다. 자세한 상태는 [번역 품질 및 검수 현황](docs/translation-quality.md)에서 확인할 수 있습니다.
 
@@ -53,7 +60,7 @@ npm install
 npm run check
 ```
 
-`npm run audit:i18n`을 실행하면 4,708개 현지화 문구만 별도로 전수 검사할 수 있습니다.
+`npm run audit:i18n`을 실행하면 4,840개 현지화 문구만 별도로 전수 검사할 수 있습니다.
 
 개발 중에는 메인 볼트 대신 별도 테스트 볼트를 권장합니다. 빌드 후 아래 세 파일을 테스트 볼트의 `.obsidian/plugins/ebbinghaus-review/`에 복사합니다.
 
@@ -66,7 +73,7 @@ Obsidian의 **Settings → Community plugins**에서 `Ebbinghaus Review`를 켭�
 ## 사용법
 
 1. 복습할 Markdown 노트를 엽니다.
-2. 명령 팔레트에서 **Ebbinghaus Review: Start or restart review schedule for current note**를 실행합니다.
+2. 명령 팔레트를 열고 `Ebbinghaus Review`를 검색한 다음 **Ebbinghaus Review: 현재 노트 복습 일정 시작 또는 재시작**을 실행합니다.
 3. 상태 표시줄의 `복습 0/7 · D-1` 또는 막대그래프 리본 아이콘을 눌러 현재 노트의 복습 현황을 확인합니다.
 4. 리본의 달력 아이콘이나 상태 표시줄의 `오늘 N · 놓침 N`을 눌러 학습 대시보드를 엽니다.
 5. 학습을 마치면 현황 패널의 **복습 완료**를 눌러 다음 복습일을 예약합니다.
@@ -79,6 +86,8 @@ Obsidian의 **Settings → Community plugins**에서 `Ebbinghaus Review`를 켭�
 복습 일정과 진행 이력은 플러그인의 내부 데이터에 저장되므로 노트에 별도 속성이 추가되지 않습니다. 0.4.x 이하 버전에서 만든 `ebbinghaus_review_*` 속성은 플러그인 업데이트 시 내부 저장소로 자동 이전된 후 노트에서 제거됩니다. 노트를 이동하거나 이름을 바꾸면 내부 기록도 함께 갱신됩니다.
 
 ## 명령
+
+모든 명령은 플러그인 언어 설정과 관계없이 `Ebbinghaus Review:` 접두사로 표시되므로, 명령 팔레트에서 플러그인 이름만 입력해도 한 번에 찾을 수 있습니다.
 
 - `현재 노트 복습 일정 시작 또는 재시작`
 - `현재 노트를 복습 완료로 기록`
