@@ -4,6 +4,16 @@
 
 Schedule spaced reviews for each note, see what is due today or overdue, and track your learning progress without adding properties to the top of your notes.
 
+### The forgetting curve
+
+The Ebbinghaus forgetting curve describes a general tendency of memory: without review, recall drops quickly soon after learning, then the rate of forgetting gradually slows. Reviewing material before it is forgotten strengthens retention and makes it possible to wait longer before the next review.
+
+This plugin applies that idea through spaced repetition. Reviews begin close together and become progressively farther apart as the note advances through its schedule.
+
+![Conceptual Ebbinghaus forgetting curve showing how spaced reviews strengthen memory](docs/images/en/forgetting-curve.svg)
+
+*Conceptual illustration. Actual retention and effective review intervals vary by learner and material; the timeline is not to scale.*
+
 > The default intervals are a practical spaced-repetition preset. They do not claim to reproduce Ebbinghaus's experimental results exactly for every learner. You can customize the intervals in settings.
 
 ### Highlights
