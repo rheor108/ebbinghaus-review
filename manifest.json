@@ -1,7 +1,7 @@
 {
   "id": "ebbinghaus-review",
   "name": "Note Review Reminder",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "minAppVersion": "1.8.7",
   "description": "Schedule spaced reviews for notes, track what is due or overdue, and get reminders while you study.",
   "author": "seungbum",
