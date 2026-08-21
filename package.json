@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "node esbuild.config.mjs",
     "build": "tsc --noEmit --skipLibCheck && node esbuild.config.mjs production",
-    "test": "tsx --test tests/**/*.test.ts",
+    "test": "tsx --test",
     "audit:i18n": "tsx scripts/audit-translations.ts",
     "check": "npm run audit:i18n && npm run test && npm run build"
   },
