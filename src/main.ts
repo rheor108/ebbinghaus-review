@@ -996,9 +996,9 @@ class EbbinghausReviewSettingTab extends PluginSettingTab {
   }
 
   refresh(): void {
-    const update = (this as EbbinghausReviewSettingTab & { update?: () => void }).update;
+    const update: unknown = Reflect.get(this, "update");
     if (typeof update === "function") {
-      update.call(this);
+      Reflect.apply(update, this, []);
       return;
     }
     this.renderLegacySettings();
@@ -1022,111 +1022,138 @@ class EbbinghausReviewSettingTab extends PluginSettingTab {
     }
   }
 
+  private runSettingAction(action: () => Promise<void>): void {
+    void this.plugin.withNoticeErrors(action);
+  }
+
   private getSettingRows(): SettingRowDefinition[] {
     return [
       {
         name: this.plugin.i18n.t("languageSetting"),
         desc: this.plugin.i18n.t("languageSettingDesc"),
-        render: (setting) => setting.addDropdown((dropdown) => {
-          const obsidianLocale = createI18n(getLanguage()).locale;
-          const obsidianLanguage = localeDisplayName(obsidianLocale, this.plugin.i18n.intlLocale);
-          dropdown.addOption(
-            AUTO_LOCALE,
-            this.plugin.i18n.t("followObsidianLanguage", { language: obsidianLanguage }),
-          );
-          const collator = new Intl.Collator(this.plugin.i18n.intlLocale);
-          const localeOptions = SUPPORTED_LOCALES
-            .map((locale) => ({
-              locale,
-              name: localeDisplayName(locale, this.plugin.i18n.intlLocale),
-            }))
-            .sort((first, second) => collator.compare(first.name, second.name));
-          for (const { locale, name } of localeOptions) dropdown.addOption(locale, name);
-          dropdown.setValue(this.plugin.settings.language).onChange(async (value) => {
-            const language = normalizeLocalePreference(value);
-            await this.plugin.setLanguagePreference(language);
+        render: (setting) => {
+          setting.addDropdown((dropdown) => {
+            const obsidianLocale = createI18n(getLanguage()).locale;
+            const obsidianLanguage = localeDisplayName(
+              obsidianLocale,
+              this.plugin.i18n.intlLocale,
+            );
+            dropdown.addOption(
+              AUTO_LOCALE,
+              this.plugin.i18n.t("followObsidianLanguage", { language: obsidianLanguage }),
+            );
+            const collator = new Intl.Collator(this.plugin.i18n.intlLocale);
+            const localeOptions = SUPPORTED_LOCALES
+              .map((locale) => ({
+                locale,
+                name: localeDisplayName(locale, this.plugin.i18n.intlLocale),
+              }))
+              .sort((first, second) => collator.compare(first.name, second.name));
+            for (const { locale, name } of localeOptions) dropdown.addOption(locale, name);
+            dropdown.setValue(this.plugin.settings.language).onChange((value) => {
+              const language = normalizeLocalePreference(value);
+              this.runSettingAction(() => this.plugin.setLanguagePreference(language));
+            });
           });
-        }),
+        },
       },
       {
         name: this.plugin.i18n.t("reviewIntervalsSetting"),
         desc: this.plugin.i18n.t("reviewIntervalsDesc"),
-        render: (setting) => setting.addText((text) => {
-          text.setValue(this.plugin.settings.intervals).onChange(async (value) => {
-            if (!parseIntervals(value)) {
-              text.inputEl.addClass("ebbinghaus-review-invalid");
-              return;
-            }
-            text.inputEl.removeClass("ebbinghaus-review-invalid");
-            await this.plugin.updateSetting("intervals", value);
+        render: (setting) => {
+          setting.addText((text) => {
+            text.setValue(this.plugin.settings.intervals).onChange((value) => {
+              if (!parseIntervals(value)) {
+                text.inputEl.addClass("ebbinghaus-review-invalid");
+                return;
+              }
+              text.inputEl.removeClass("ebbinghaus-review-invalid");
+              this.runSettingAction(() => this.plugin.updateSetting("intervals", value));
+            });
           });
-        }),
+        },
       },
       {
         name: this.plugin.i18n.t("notificationTimeSetting"),
         desc: this.plugin.i18n.t("notificationTimeDesc"),
-        render: (setting) => setting.addText((text) => {
-          text.inputEl.type = "time";
-          text.setValue(this.plugin.settings.notificationTime).onChange(async (value) => {
-            await this.plugin.updateSetting("notificationTime", value);
+        render: (setting) => {
+          setting.addText((text) => {
+            text.inputEl.type = "time";
+            text.setValue(this.plugin.settings.notificationTime).onChange((value) => {
+              this.runSettingAction(() => this.plugin.updateSetting("notificationTime", value));
+            });
           });
-        }),
+        },
       },
       {
         name: this.plugin.i18n.t("checkIntervalSetting"),
         desc: this.plugin.i18n.t("checkIntervalDesc"),
-        render: (setting) => setting.addText((text) => {
-          text.inputEl.type = "number";
-          text.inputEl.min = "1";
-          text.setValue(String(this.plugin.settings.checkIntervalMinutes)).onChange(async (value) => {
-            const minutes = Number(value);
-            if (!Number.isSafeInteger(minutes) || minutes < 1) return;
-            await this.plugin.updateSetting("checkIntervalMinutes", minutes);
-            this.plugin.updateCheckInterval();
+        render: (setting) => {
+          setting.addText((text) => {
+            text.inputEl.type = "number";
+            text.inputEl.min = "1";
+            text.setValue(String(this.plugin.settings.checkIntervalMinutes)).onChange((value) => {
+              const minutes = Number(value);
+              if (!Number.isSafeInteger(minutes) || minutes < 1) return;
+              this.runSettingAction(async () => {
+                await this.plugin.updateSetting("checkIntervalMinutes", minutes);
+                this.plugin.updateCheckInterval();
+              });
+            });
           });
-        }),
+        },
       },
       {
         name: this.plugin.i18n.t("keepPanelSetting"),
         desc: this.plugin.i18n.t("keepPanelDesc"),
-        render: (setting) => setting.addToggle((toggle) => {
-          toggle.setValue(this.plugin.settings.keepStatusPanelOpen).onChange(async (value) => {
-            await this.plugin.updateSetting("keepStatusPanelOpen", value);
-            if (value) await this.plugin.ensureStatusView(true);
+        render: (setting) => {
+          setting.addToggle((toggle) => {
+            toggle.setValue(this.plugin.settings.keepStatusPanelOpen).onChange((value) => {
+              this.runSettingAction(async () => {
+                await this.plugin.updateSetting("keepStatusPanelOpen", value);
+                if (value) await this.plugin.ensureStatusView(true);
+              });
+            });
           });
-        }),
+        },
       },
       {
         name: this.plugin.i18n.t("notifyOnStartupSetting"),
         desc: this.plugin.i18n.t("notifyOnStartupDesc"),
-        render: (setting) => setting.addToggle((toggle) => {
-          toggle.setValue(this.plugin.settings.notifyOnStartup).onChange(async (value) => {
-            await this.plugin.updateSetting("notifyOnStartup", value);
+        render: (setting) => {
+          setting.addToggle((toggle) => {
+            toggle.setValue(this.plugin.settings.notifyOnStartup).onChange((value) => {
+              this.runSettingAction(() => this.plugin.updateSetting("notifyOnStartup", value));
+            });
           });
-        }),
+        },
       },
       {
         name: this.plugin.i18n.t("systemNotificationsSetting"),
         desc: this.plugin.i18n.t("systemNotificationsDesc"),
-        render: (setting) => setting.addToggle((toggle) => {
-          toggle.setValue(this.plugin.settings.systemNotifications).onChange(async (value) => {
-            if (value && typeof Notification === "undefined") {
-              toggle.setValue(false);
-              new Notice(this.plugin.i18n.t("systemNotificationUnavailable"));
-              value = false;
-            } else if (value && typeof Notification !== "undefined") {
-              const permission = Notification.permission === "default"
-                ? await Notification.requestPermission()
-                : Notification.permission;
-              if (permission !== "granted") {
-                toggle.setValue(false);
-                new Notice(this.plugin.i18n.t("systemNotificationPermissionDenied"));
-                value = false;
-              }
-            }
-            await this.plugin.updateSetting("systemNotifications", value);
+        render: (setting) => {
+          setting.addToggle((toggle) => {
+            toggle.setValue(this.plugin.settings.systemNotifications).onChange((value) => {
+              this.runSettingAction(async () => {
+                if (value && typeof Notification === "undefined") {
+                  toggle.setValue(false);
+                  new Notice(this.plugin.i18n.t("systemNotificationUnavailable"));
+                  value = false;
+                } else if (value && typeof Notification !== "undefined") {
+                  const permission = Notification.permission === "default"
+                    ? await Notification.requestPermission()
+                    : Notification.permission;
+                  if (permission !== "granted") {
+                    toggle.setValue(false);
+                    new Notice(this.plugin.i18n.t("systemNotificationPermissionDenied"));
+                    value = false;
+                  }
+                }
+                await this.plugin.updateSetting("systemNotifications", value);
+              });
+            });
           });
-        }),
+        },
       },
     ];
   }

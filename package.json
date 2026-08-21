@@ -1,6 +1,6 @@
 {
   "name": "obsidian-ebbinghaus-review",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Spaced note review scheduling, progress tracking, and reminders for Obsidian",
   "main": "main.js",
   "type": "module",
@@ -8,8 +8,9 @@
     "dev": "node esbuild.config.mjs",
     "build": "tsc --noEmit --skipLibCheck && node esbuild.config.mjs production",
     "test": "tsx --test",
+    "lint": "eslint src",
     "audit:i18n": "tsx scripts/audit-translations.ts",
-    "check": "npm run audit:i18n && npm run test && npm run build"
+    "check": "npm run audit:i18n && npm run test && npm run lint && npm run build"
   },
   "keywords": [
     "obsidian",
@@ -18,10 +19,16 @@
   ],
   "license": "MIT",
   "devDependencies": {
+    "@eslint/js": "9.39.4",
     "@types/node": "^22.15.17",
     "esbuild": "^0.25.5",
+    "eslint": "9.39.4",
+    "eslint-plugin-obsidianmd": "^0.4.1",
+    "globals": "^17.11.0",
+    "jiti": "^2.7.0",
     "obsidian": "latest",
     "tsx": "^4.20.3",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.67.0"
   }
 }

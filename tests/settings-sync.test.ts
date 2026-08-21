@@ -78,6 +78,14 @@ test("publishes searchable declarative settings with a legacy fallback", () => {
   assert.doesNotMatch(mainSource, /this\.settingTab\?\.display\(\)/);
 });
 
+test("keeps settings callbacks void-returning and catches asynchronous failures", () => {
+  assert.match(mainSource, /Reflect\.get\(this, "update"\)/);
+  assert.match(mainSource, /private runSettingAction\(action: \(\) => Promise<void>\): void/);
+  assert.match(mainSource, /void this\.plugin\.withNoticeErrors\(action\)/);
+  assert.doesNotMatch(mainSource, /onChange\(async/);
+  assert.doesNotMatch(mainSource, /\}\)\.update;/);
+});
+
 test("does not enumerate the vault for legacy schedule migration", () => {
   assert.doesNotMatch(mainSource, /getMarkdownFiles\(\)/);
   assert.doesNotMatch(mainSource, /getFiles\(\)/);
