@@ -53,7 +53,11 @@ import {
   type LocalePreference,
 } from "./i18n";
 import type { MessageKey } from "./messages";
-import { settingsFingerprint } from "./settings-sync";
+import {
+  MANUAL_REFRESH_RETRY_ATTEMPTS,
+  MANUAL_REFRESH_RETRY_DELAY_MS,
+  settingsFingerprint,
+} from "./settings-sync";
 import { reregisterCommand } from "./localized-command";
 
 interface EbbinghausReviewSettings {
@@ -187,6 +191,7 @@ export default class EbbinghausReviewPlugin extends Plugin {
   private settingsQueue: Promise<void> = Promise.resolve();
   private restoringStatusView = false;
   private isUnloading = false;
+  private manualRefreshGeneration = 0;
 
   async onload(): Promise<void> {
     await this.loadSettings();
@@ -301,6 +306,21 @@ export default class EbbinghausReviewPlugin extends Plugin {
     await this.synchronizeSettingsFromDisk();
   }
 
+  async refreshSyncedData(): Promise<void> {
+    const generation = ++this.manualRefreshGeneration;
+    if (await this.synchronizeSettingsFromDisk()) return;
+
+    for (let attempt = 0; attempt < MANUAL_REFRESH_RETRY_ATTEMPTS; attempt += 1) {
+      await new Promise<void>((resolve) => {
+        window.setTimeout(resolve, MANUAL_REFRESH_RETRY_DELAY_MS);
+      });
+      if (this.isUnloading || generation !== this.manualRefreshGeneration) return;
+      if (await this.synchronizeSettingsFromDisk()) return;
+    }
+
+    await this.refreshStatus();
+  }
+
   private addLocalizedCommand(key: MessageKey, command: Omit<Command, "name">): void {
     const registered = this.addCommand({ ...command, name: this.i18n.t(key) });
     this.localizedCommands.push({ definition: command, key, registered });
@@ -340,6 +360,7 @@ export default class EbbinghausReviewPlugin extends Plugin {
 
   onunload(): void {
     this.isUnloading = true;
+    this.manualRefreshGeneration += 1;
     this.app.workspace.detachLeavesOfType(REVIEW_STATUS_VIEW_TYPE);
     this.app.workspace.detachLeavesOfType(REVIEW_DASHBOARD_VIEW_TYPE);
   }
@@ -942,7 +963,7 @@ export default class EbbinghausReviewPlugin extends Plugin {
     });
   }
 
-  private async synchronizeSettingsFromDisk(): Promise<void> {
+  private async synchronizeSettingsFromDisk(): Promise<boolean> {
     try {
       const { changed, checkIntervalChanged, languageChanged } = await this.enqueueSettingsOperation(async () => {
         const previousCheckInterval = this.settings.checkIntervalMinutes;
@@ -955,7 +976,7 @@ export default class EbbinghausReviewPlugin extends Plugin {
           languageChanged: reloaded && previousLanguage !== this.settings.language,
         };
       });
-      if (!changed) return;
+      if (!changed) return false;
       if (checkIntervalChanged) this.updateCheckInterval();
       if (languageChanged) {
         this.applyConfiguredLanguage();
@@ -964,8 +985,10 @@ export default class EbbinghausReviewPlugin extends Plugin {
       }
       await this.refreshStatus();
       if (languageChanged) this.app.workspace.trigger("layout-change");
+      return true;
     } catch (error) {
       console.error(`${this.manifest.name}: failed to reload synced settings`, error);
+      return false;
     }
   }
 

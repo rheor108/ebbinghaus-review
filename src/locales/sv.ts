@@ -110,7 +110,8 @@ const messages: MessageDictionary = {
   "systemNotificationsSetting": "Systemmeddelanden",
   "systemNotificationsDesc": "Visa även operativsystemaviseringar när tillstånd beviljas.",
   "systemNotificationUnavailable": "Systemaviseringar är inte tillgängliga på den här enheten.",
-  "systemNotificationPermissionDenied": "Systemaviseringstillstånd beviljades inte."
+  "systemNotificationPermissionDenied": "Systemaviseringstillstånd beviljades inte.",
+  "refresh": "Uppdatera"
 };
 
 export default messages;

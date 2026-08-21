@@ -110,7 +110,8 @@ const messages: MessageDictionary = {
   "systemNotificationsSetting": "Sistēmas paziņojumi",
   "systemNotificationsDesc": "Rādīt arī operētājsistēmas paziņojumus, kad tiek piešķirta atļauja.",
   "systemNotificationUnavailable": "Sistēmas paziņojumi šajā ierīcē nav pieejami.",
-  "systemNotificationPermissionDenied": "Sistēmas paziņojumu atļauja netika piešķirta."
+  "systemNotificationPermissionDenied": "Sistēmas paziņojumu atļauja netika piešķirta.",
+  "refresh": "Atsvaidzināt"
 };
 
 export default messages;

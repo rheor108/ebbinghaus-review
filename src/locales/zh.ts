@@ -110,7 +110,8 @@ const messages: MessageDictionary = {
   "systemNotificationsSetting": "系统通知",
   "systemNotificationsDesc": "授予权限时还会显示操作系统通知。",
   "systemNotificationUnavailable": "系统通知在此设备上不可用。",
-  "systemNotificationPermissionDenied": "未授予系统通知权限。"
+  "systemNotificationPermissionDenied": "未授予系统通知权限。",
+  "refresh": "刷新"
 };
 
 export default messages;

@@ -110,7 +110,8 @@ const messages: MessageDictionary = {
   "systemNotificationsSetting": "Системні сповіщення",
   "systemNotificationsDesc": "Також показувати сповіщення операційної системи, коли надається дозвіл.",
   "systemNotificationUnavailable": "Системні сповіщення недоступні на цьому пристрої.",
-  "systemNotificationPermissionDenied": "Дозвіл на сповіщення системи не надано."
+  "systemNotificationPermissionDenied": "Дозвіл на сповіщення системи не надано.",
+  "refresh": "Оновити"
 };
 
 export default messages;

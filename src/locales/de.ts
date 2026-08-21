@@ -110,7 +110,8 @@ const messages: MessageDictionary = {
   "systemNotificationsSetting": "Systembenachrichtigungen",
   "systemNotificationsDesc": "Bei erteilter Berechtigung auch Betriebssystembenachrichtigungen anzeigen.",
   "systemNotificationUnavailable": "Systembenachrichtigungen sind auf diesem Gerät nicht verfügbar.",
-  "systemNotificationPermissionDenied": "Die Berechtigung zur Systembenachrichtigung wurde nicht erteilt."
+  "systemNotificationPermissionDenied": "Die Berechtigung zur Systembenachrichtigung wurde nicht erteilt.",
+  "refresh": "Aktualisieren"
 };
 
 export default messages;

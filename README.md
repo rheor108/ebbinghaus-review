@@ -76,7 +76,7 @@ npm install
 npm run check
 ```
 
-Run `npm run audit:i18n` to validate all 4,840 localized messages independently.
+Run `npm run audit:i18n` to validate all 4,884 localized messages independently.
 
 Copy `main.js`, `manifest.json`, and `styles.css` into a test vault's `.obsidian/plugins/ebbinghaus-review/` directory, then enable **Note Review Reminder** under **Settings → Community plugins**.
 

@@ -110,7 +110,8 @@ const messages: MessageDictionary = {
   "systemNotificationsSetting": "시스템 알림",
   "systemNotificationsDesc": "권한이 허용된 경우 운영체제 알림도 함께 표시합니다.",
   "systemNotificationUnavailable": "이 기기에서는 시스템 알림을 사용할 수 없습니다.",
-  "systemNotificationPermissionDenied": "시스템 알림 권한이 허용되지 않았습니다."
+  "systemNotificationPermissionDenied": "시스템 알림 권한이 허용되지 않았습니다.",
+  "refresh": "새로고침"
 };
 
 export default messages;

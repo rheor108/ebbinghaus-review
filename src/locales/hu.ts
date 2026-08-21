@@ -110,7 +110,8 @@ const messages: MessageDictionary = {
   "systemNotificationsSetting": "Rendszerértesítések",
   "systemNotificationsDesc": "Az engedély megadásakor az operációs rendszer értesítéseit is megjeleníti.",
   "systemNotificationUnavailable": "A rendszerértesítések nem érhetők el ezen az eszközön.",
-  "systemNotificationPermissionDenied": "A rendszer értesítési engedélye nem lett megadva."
+  "systemNotificationPermissionDenied": "A rendszer értesítési engedélye nem lett megadva.",
+  "refresh": "Frissítés"
 };
 
 export default messages;

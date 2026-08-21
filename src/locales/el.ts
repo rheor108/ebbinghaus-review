@@ -110,7 +110,8 @@ const messages: MessageDictionary = {
   "systemNotificationsSetting": "Ειδοποιήσεις συστήματος",
   "systemNotificationsDesc": "Εμφάνιση επίσης ειδοποιήσεων του λειτουργικού συστήματος όταν χορηγείται άδεια.",
   "systemNotificationUnavailable": "Οι ειδοποιήσεις συστήματος δεν είναι διαθέσιμες σε αυτήν τη συσκευή.",
-  "systemNotificationPermissionDenied": "Δεν χορηγήθηκε άδεια ειδοποίησης συστήματος."
+  "systemNotificationPermissionDenied": "Δεν χορηγήθηκε άδεια ειδοποίησης συστήματος.",
+  "refresh": "Ανανέωση"
 };
 
 export default messages;

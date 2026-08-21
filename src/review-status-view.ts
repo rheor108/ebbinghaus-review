@@ -61,7 +61,8 @@ export class ReviewStatusView extends ItemView {
       text: file?.basename ?? this.plugin.i18n.t("noMarkdownNoteOpen"),
     });
 
-    const dashboard = content.createEl("button", {
+    const shortcuts = content.createDiv({ cls: "ebbinghaus-status-shortcuts" });
+    const dashboard = shortcuts.createEl("button", {
       cls: "ebbinghaus-open-dashboard",
       attr: { type: "button" },
     });
@@ -70,6 +71,20 @@ export class ReviewStatusView extends ItemView {
     dashboard.createSpan({ text: this.plugin.i18n.t("commandOpenDashboard") });
     dashboard.addEventListener("click", () => {
       void this.plugin.activateDashboard("today");
+    });
+
+    const refresh = shortcuts.createEl("button", {
+      cls: "ebbinghaus-refresh-data ebbinghaus-refresh-data-icon-only",
+      attr: {
+        "aria-label": this.plugin.i18n.t("refresh"),
+        "data-tooltip-position": "top",
+        type: "button",
+      },
+    });
+    const refreshIcon = refresh.createSpan({ cls: "ebbinghaus-refresh-data-icon" });
+    setIcon(refreshIcon, "refresh-cw");
+    refresh.addEventListener("click", () => {
+      void this.refreshSyncedData(refresh);
     });
 
     if (!file) {
@@ -241,5 +256,18 @@ export class ReviewStatusView extends ItemView {
   private async runAndRefresh(action: () => Promise<void>, version: number): Promise<void> {
     await this.plugin.withNoticeErrors(action);
     if (version <= this.renderVersion) await this.render();
+  }
+
+  private async refreshSyncedData(button: HTMLButtonElement): Promise<void> {
+    button.disabled = true;
+    button.addClass("is-loading");
+    try {
+      await this.plugin.refreshSyncedData();
+    } finally {
+      if (button.isConnected) {
+        button.disabled = false;
+        button.removeClass("is-loading");
+      }
+    }
   }
 }

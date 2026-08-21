@@ -110,7 +110,8 @@ const messages: MessageDictionary = {
   "systemNotificationsSetting": "Thông báo hệ thống",
   "systemNotificationsDesc": "Đồng thời hiển thị thông báo của hệ điều hành khi được cấp quyền.",
   "systemNotificationUnavailable": "Thông báo hệ thống không có sẵn trên thiết bị này.",
-  "systemNotificationPermissionDenied": "Quyền thông báo hệ thống không được cấp."
+  "systemNotificationPermissionDenied": "Quyền thông báo hệ thống không được cấp.",
+  "refresh": "Làm mới"
 };
 
 export default messages;

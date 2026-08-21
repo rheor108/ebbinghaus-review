@@ -17,3 +17,17 @@ test("the review status panel always offers a localized dashboard shortcut", () 
   assert.match(source, /setIcon\(dashboardIcon, "layout-dashboard"\)/);
   assert.match(source, /activateDashboard\("today"\)/);
 });
+
+test("the review status panel always offers a manual synced-data refresh", () => {
+  const buttonIndex = source.indexOf('cls: "ebbinghaus-refresh-data ebbinghaus-refresh-data-icon-only"');
+  const noFileGuardIndex = source.indexOf("if (!file)");
+
+  assert.ok(buttonIndex >= 0, "missing refresh button");
+  assert.ok(
+    buttonIndex < noFileGuardIndex,
+    "refresh should be available even when no Markdown note is open",
+  );
+  assert.match(source, /i18n\.t\("refresh"\)/);
+  assert.match(source, /setIcon\(refreshIcon, "refresh-cw"\)/);
+  assert.match(source, /plugin\.refreshSyncedData\(\)/);
+});
