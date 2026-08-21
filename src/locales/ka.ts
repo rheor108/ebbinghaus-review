@@ -110,7 +110,8 @@ const messages: MessageDictionary = {
   "systemNotificationsSetting": "სისტემის შეტყობინებები",
   "systemNotificationsDesc": "ასევე აჩვენეთ ოპერაციული სისტემის შეტყობინებები ნებართვის მიღებისას.",
   "systemNotificationUnavailable": "სისტემის შეტყობინებები მიუწვდომელია ამ მოწყობილობაზე.",
-  "systemNotificationPermissionDenied": "სისტემის შეტყობინების ნებართვა არ მიენიჭა."
+  "systemNotificationPermissionDenied": "სისტემის შეტყობინების ნებართვა არ მიენიჭა.",
+  "refresh": "განახლება"
 };
 
 export default messages;

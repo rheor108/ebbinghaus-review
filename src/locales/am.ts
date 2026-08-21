@@ -110,7 +110,8 @@ const messages: MessageDictionary = {
   "systemNotificationsSetting": "የስርዓት ማሳወቂያዎች",
   "systemNotificationsDesc": "እንዲሁም ፈቃድ ሲሰጥ የስርዓተ ክወና ማሳወቂያዎችን አሳይ።",
   "systemNotificationUnavailable": "የስርዓት ማሳወቂያዎች በዚህ መሳሪያ ላይ አይገኙም።",
-  "systemNotificationPermissionDenied": "የስርዓት ማሳወቂያ ፍቃድ አልተሰጠም።"
+  "systemNotificationPermissionDenied": "የስርዓት ማሳወቂያ ፍቃድ አልተሰጠም።",
+  "refresh": "አድስ"
 };
 
 export default messages;

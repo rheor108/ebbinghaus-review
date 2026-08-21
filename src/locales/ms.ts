@@ -110,7 +110,8 @@ const messages: MessageDictionary = {
   "systemNotificationsSetting": "Pemberitahuan sistem",
   "systemNotificationsDesc": "Tunjukkan juga pemberitahuan sistem pengendalian apabila kebenaran diberikan.",
   "systemNotificationUnavailable": "Pemberitahuan sistem tidak tersedia pada peranti ini.",
-  "systemNotificationPermissionDenied": "Kebenaran pemberitahuan sistem tidak diberikan."
+  "systemNotificationPermissionDenied": "Kebenaran pemberitahuan sistem tidak diberikan.",
+  "refresh": "Segarkan"
 };
 
 export default messages;

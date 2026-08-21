@@ -110,7 +110,8 @@ const messages: MessageDictionary = {
   "systemNotificationsSetting": "Systémová upozornění",
   "systemNotificationsDesc": "Při udělení oprávnění zobrazit také oznámení operačního systému.",
   "systemNotificationUnavailable": "Systémová oznámení nejsou na tomto zařízení dostupná.",
-  "systemNotificationPermissionDenied": "Oprávnění k oznámení systému nebylo uděleno."
+  "systemNotificationPermissionDenied": "Oprávnění k oznámení systému nebylo uděleno.",
+  "refresh": "Obnovit"
 };
 
 export default messages;

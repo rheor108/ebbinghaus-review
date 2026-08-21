@@ -70,7 +70,7 @@ npm install
 npm run check
 ```
 
-`npm run audit:i18n`을 실행하면 4,840개 현지화 문구만 별도로 전수 검사할 수 있습니다.
+`npm run audit:i18n`을 실행하면 4,884개 현지화 문구만 별도로 전수 검사할 수 있습니다.
 
 개발 중에는 메인 볼트 대신 별도 테스트 볼트를 권장합니다. 빌드 후 아래 세 파일을 테스트 볼트의 `.obsidian/plugins/ebbinghaus-review/`에 복사합니다.
 

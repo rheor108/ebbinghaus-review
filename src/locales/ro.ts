@@ -110,7 +110,8 @@ const messages: MessageDictionary = {
   "systemNotificationsSetting": "Notificări de sistem",
   "systemNotificationsDesc": "Afișează, de asemenea, notificări ale sistemului de operare când se acordă permisiunea.",
   "systemNotificationUnavailable": "Notificările de sistem nu sunt disponibile pe acest dispozitiv.",
-  "systemNotificationPermissionDenied": "Permisiunea de notificare de sistem nu a fost acordată."
+  "systemNotificationPermissionDenied": "Permisiunea de notificare de sistem nu a fost acordată.",
+  "refresh": "Reîmprospătează"
 };
 
 export default messages;

@@ -76,6 +76,7 @@ export const EN_MESSAGES = {
   commandOpenStats: "Open study statistics",
   commandOpenDashboard: "Open the study dashboard",
   commandOpenOverdue: "Open overdue reviews",
+  refresh: "Refresh",
   scheduleStartedNotice: "Review schedule started. First review: {date}",
   noActiveSchedule: "This note has no active review schedule.",
   reviewRecorded: "Review recorded.",

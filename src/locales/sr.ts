@@ -110,7 +110,8 @@ const messages: MessageDictionary = {
   "systemNotificationsSetting": "Системска обавештења",
   "systemNotificationsDesc": "Такође прикажите обавештења оперативног система када се одобри дозвола.",
   "systemNotificationUnavailable": "Системска обавештења нису доступна на овом уређају.",
-  "systemNotificationPermissionDenied": "Дозвола за системско обавештење није одобрена."
+  "systemNotificationPermissionDenied": "Дозвола за системско обавештење није одобрена.",
+  "refresh": "Освежи"
 };
 
 export default messages;

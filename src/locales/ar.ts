@@ -110,7 +110,8 @@ const messages: MessageDictionary = {
   "systemNotificationsSetting": "إشعارات النظام",
   "systemNotificationsDesc": "قم أيضًا بعرض إشعارات نظام التشغيل عند منح الإذن.",
   "systemNotificationUnavailable": "إشعارات النظام غير متوفرة على هذا الجهاز.",
-  "systemNotificationPermissionDenied": "لم يتم منح إذن إعلام النظام."
+  "systemNotificationPermissionDenied": "لم يتم منح إذن إعلام النظام.",
+  "refresh": "تحديث"
 };
 
 export default messages;

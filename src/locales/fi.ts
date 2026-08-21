@@ -110,7 +110,8 @@ const messages: MessageDictionary = {
   "systemNotificationsSetting": "Järjestelmän ilmoitukset",
   "systemNotificationsDesc": "Näytä myös käyttöjärjestelmän ilmoitukset, kun lupa myönnetään.",
   "systemNotificationUnavailable": "Järjestelmäilmoitukset eivät ole käytettävissä tällä laitteella.",
-  "systemNotificationPermissionDenied": "Järjestelmän ilmoituslupaa ei myönnetty."
+  "systemNotificationPermissionDenied": "Järjestelmän ilmoituslupaa ei myönnetty.",
+  "refresh": "Päivitä"
 };
 
 export default messages;

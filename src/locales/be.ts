@@ -110,7 +110,8 @@ const messages: MessageDictionary = {
   "systemNotificationsSetting": "Сістэмныя апавяшчэнні",
   "systemNotificationsDesc": "Таксама паказваць апавяшчэнні аперацыйнай сістэмы пры атрыманні дазволу.",
   "systemNotificationUnavailable": "Сістэмныя апавяшчэнні недаступныя на гэтай прыладзе.",
-  "systemNotificationPermissionDenied": "Дазвол на апавяшчэнне сістэмы не быў дадзены."
+  "systemNotificationPermissionDenied": "Дазвол на апавяшчэнне сістэмы не быў дадзены.",
+  "refresh": "Абнавіць"
 };
 
 export default messages;

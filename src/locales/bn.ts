@@ -110,7 +110,8 @@ const messages: MessageDictionary = {
   "systemNotificationsSetting": "সিস্টেম বিজ্ঞপ্তি",
   "systemNotificationsDesc": "অনুমতি দেওয়া হলে অপারেটিং সিস্টেমের বিজ্ঞপ্তিগুলিও দেখান৷",
   "systemNotificationUnavailable": "সিস্টেম বিজ্ঞপ্তি এই ডিভাইসে উপলব্ধ নেই.",
-  "systemNotificationPermissionDenied": "সিস্টেম বিজ্ঞপ্তি অনুমতি দেওয়া হয়নি."
+  "systemNotificationPermissionDenied": "সিস্টেম বিজ্ঞপ্তি অনুমতি দেওয়া হয়নি.",
+  "refresh": "রিফ্রেশ করুন"
 };
 
 export default messages;

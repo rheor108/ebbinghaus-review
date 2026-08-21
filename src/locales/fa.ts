@@ -110,7 +110,8 @@ const messages: MessageDictionary = {
   "systemNotificationsSetting": "اطلاعیه های سیستم",
   "systemNotificationsDesc": "همچنین هنگام اعطای مجوز، اعلان‌های سیستم عامل را نشان دهید.",
   "systemNotificationUnavailable": "اعلان‌های سیستم در این دستگاه در دسترس نیستند.",
-  "systemNotificationPermissionDenied": "مجوز اعلان سیستم داده نشد."
+  "systemNotificationPermissionDenied": "مجوز اعلان سیستم داده نشد.",
+  "refresh": "تازه‌سازی"
 };
 
 export default messages;

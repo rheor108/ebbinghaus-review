@@ -110,7 +110,8 @@ const messages: MessageDictionary = {
   "systemNotificationsSetting": "Njoftimet e sistemit",
   "systemNotificationsDesc": "Shfaq gjithashtu njoftimet e sistemit operativ kur jepet leja.",
   "systemNotificationUnavailable": "Njoftimet e sistemit nuk ofrohen në këtë pajisje.",
-  "systemNotificationPermissionDenied": "Leja e njoftimit të sistemit nuk u dha."
+  "systemNotificationPermissionDenied": "Leja e njoftimit të sistemit nuk u dha.",
+  "refresh": "Rifresko"
 };
 
 export default messages;

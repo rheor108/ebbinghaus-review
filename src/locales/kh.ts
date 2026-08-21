@@ -110,7 +110,8 @@ const messages: MessageDictionary = {
   "systemNotificationsSetting": "ការជូនដំណឹងប្រព័ន្ធ",
   "systemNotificationsDesc": "បង្ហាញការជូនដំណឹងប្រព័ន្ធប្រតិបត្តិការផងដែរ នៅពេលដែលមានការអនុញ្ញាត។",
   "systemNotificationUnavailable": "ការជូនដំណឹងប្រព័ន្ធមិនមាននៅលើឧបករណ៍នេះទេ។",
-  "systemNotificationPermissionDenied": "ការអនុញ្ញាតការជូនដំណឹងប្រព័ន្ធមិនត្រូវបានផ្តល់ឱ្យទេ។"
+  "systemNotificationPermissionDenied": "ការអនុញ្ញាតការជូនដំណឹងប្រព័ន្ធមិនត្រូវបានផ្តល់ឱ្យទេ។",
+  "refresh": "ផ្ទុកឡើងវិញ"
 };
 
 export default messages;

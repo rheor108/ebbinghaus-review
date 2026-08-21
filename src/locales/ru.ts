@@ -110,7 +110,8 @@ const messages: MessageDictionary = {
   "systemNotificationsSetting": "Системные уведомления",
   "systemNotificationsDesc": "Также показывать уведомления операционной системы, когда разрешение предоставлено.",
   "systemNotificationUnavailable": "Системные уведомления недоступны на этом устройстве.",
-  "systemNotificationPermissionDenied": "Разрешение на системное уведомление не предоставлено."
+  "systemNotificationPermissionDenied": "Разрешение на системное уведомление не предоставлено.",
+  "refresh": "Обновить"
 };
 
 export default messages;

@@ -110,7 +110,8 @@ const messages: MessageDictionary = {
   "systemNotificationsSetting": "Systémové upozornenia",
   "systemNotificationsDesc": "Po udelení povolenia tiež zobraziť upozornenia operačného systému.",
   "systemNotificationUnavailable": "Systémové upozornenia nie sú na tomto zariadení k dispozícii.",
-  "systemNotificationPermissionDenied": "Povolenie na oznamovanie systému nebolo udelené."
+  "systemNotificationPermissionDenied": "Povolenie na oznamovanie systému nebolo udelené.",
+  "refresh": "Obnoviť"
 };
 
 export default messages;

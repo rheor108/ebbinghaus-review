@@ -110,7 +110,8 @@ const messages: MessageDictionary = {
   "systemNotificationsSetting": "システム通知",
   "systemNotificationsDesc": "権限が付与されている場合は、OS の通知も表示します。",
   "systemNotificationUnavailable": "このデバイスではシステム通知を利用できません。",
-  "systemNotificationPermissionDenied": "システム通知が許可されていません。"
+  "systemNotificationPermissionDenied": "システム通知が許可されていません。",
+  "refresh": "更新"
 };
 
 export default messages;

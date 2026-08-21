@@ -110,7 +110,8 @@ const messages: MessageDictionary = {
   "systemNotificationsSetting": "Systemvarsler",
   "systemNotificationsDesc": "Vis også operativsystemvarsler når tillatelse er gitt.",
   "systemNotificationUnavailable": "Systemvarsler er ikke tilgjengelige på denne enheten.",
-  "systemNotificationPermissionDenied": "Systemvarslingstillatelse ble ikke gitt."
+  "systemNotificationPermissionDenied": "Systemvarslingstillatelse ble ikke gitt.",
+  "refresh": "Oppdater"
 };
 
 export default messages;

@@ -110,7 +110,8 @@ const messages: MessageDictionary = {
   "systemNotificationsSetting": "הודעות מערכת",
   "systemNotificationsDesc": "הצג גם התראות של מערכת ההפעלה כאשר ניתנת הרשאה.",
   "systemNotificationUnavailable": "הודעות מערכת אינן זמינות במכשיר זה.",
-  "systemNotificationPermissionDenied": "הרשאת הודעות מערכת לא ניתנה."
+  "systemNotificationPermissionDenied": "הרשאת הודעות מערכת לא ניתנה.",
+  "refresh": "רענון"
 };
 
 export default messages;

@@ -110,7 +110,8 @@ const messages: MessageDictionary = {
   "systemNotificationsSetting": "Systemmeddelelser",
   "systemNotificationsDesc": "Vis også operativsystemmeddelelser, når tilladelse er givet.",
   "systemNotificationUnavailable": "Systemmeddelelser er ikke tilgængelige på denne enhed.",
-  "systemNotificationPermissionDenied": "Systemnotifikationstilladelse blev ikke givet."
+  "systemNotificationPermissionDenied": "Systemnotifikationstilladelse blev ikke givet.",
+  "refresh": "Opdater"
 };
 
 export default messages;

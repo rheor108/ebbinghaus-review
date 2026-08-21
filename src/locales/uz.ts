@@ -110,7 +110,8 @@ const messages: MessageDictionary = {
   "systemNotificationsSetting": "Tizim bildirishnomalari",
   "systemNotificationsDesc": "Ruxsat berilganda operatsion tizim bildirishnomalarini ham ko'rsating.",
   "systemNotificationUnavailable": "Ushbu qurilmada tizim bildirishnomalari mavjud emas.",
-  "systemNotificationPermissionDenied": "Tizim bildirishnomasiga ruxsat berilmagan."
+  "systemNotificationPermissionDenied": "Tizim bildirishnomasiga ruxsat berilmagan.",
+  "refresh": "Yangilash"
 };
 
 export default messages;

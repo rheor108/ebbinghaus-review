@@ -8,6 +8,7 @@
 }
 
 .ebbinghaus-status-panel {
+  overflow-y: auto;
   padding: var(--size-4-4);
 }
 
@@ -59,13 +60,49 @@
   display: flex;
   gap: var(--size-4-2);
   justify-content: center;
-  margin-bottom: var(--size-4-3);
   width: 100%;
 }
 
 .ebbinghaus-open-dashboard-icon {
   align-items: center;
   display: inline-flex;
+}
+
+.ebbinghaus-status-shortcuts {
+  display: grid;
+  gap: var(--size-4-2);
+  grid-template-columns: minmax(0, 1fr) auto;
+  margin-bottom: var(--size-4-3);
+}
+
+.ebbinghaus-refresh-data {
+  align-items: center;
+  display: inline-flex;
+  flex: 0 0 auto;
+  gap: var(--size-4-2);
+  justify-content: center;
+}
+
+.ebbinghaus-refresh-data-icon,
+.ebbinghaus-refresh-data-icon svg {
+  align-items: center;
+  display: inline-flex;
+}
+
+.ebbinghaus-refresh-data-icon-only {
+  aspect-ratio: 1;
+  padding-left: var(--size-4-3);
+  padding-right: var(--size-4-3);
+}
+
+.ebbinghaus-refresh-data.is-loading .ebbinghaus-refresh-data-icon {
+  animation: ebbinghaus-spin 700ms linear infinite;
+}
+
+@keyframes ebbinghaus-spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .ebbinghaus-progress-card,
@@ -227,9 +264,7 @@
  * floating navbar never covers their scrollable content.
  */
 body.is-phone.is-floating-nav .workspace-leaf-content .view-content.ebbinghaus-dashboard,
-body.is-phone.is-floating-nav .workspace-leaf-content .view-content.ebbinghaus-status-panel,
-body.is-phone.auto-full-screen .workspace-leaf-content .view-content.ebbinghaus-dashboard,
-body.is-phone.auto-full-screen .workspace-leaf-content .view-content.ebbinghaus-status-panel {
+body.is-phone.auto-full-screen .workspace-leaf-content .view-content.ebbinghaus-dashboard {
   height: calc(100% - var(--view-top-spacing) - var(--view-bottom-spacing));
   min-height: 0;
   padding-bottom: var(--size-4-4);
@@ -239,6 +274,17 @@ body.is-phone.auto-full-screen .workspace-leaf-content .view-content.ebbinghaus-
 .ebbinghaus-dashboard-header h2 {
   font-size: 2em;
   margin: var(--size-4-1) 0 var(--size-4-2);
+}
+
+.ebbinghaus-dashboard-header {
+  align-items: flex-start;
+  display: flex;
+  gap: var(--size-4-4);
+  justify-content: space-between;
+}
+
+.ebbinghaus-dashboard-header > div {
+  min-width: 0;
 }
 
 .ebbinghaus-dashboard-header p,
@@ -599,6 +645,15 @@ body.is-phone.auto-full-screen .workspace-leaf-content .view-content.ebbinghaus-
 
   .ebbinghaus-dashboard {
     padding: var(--size-4-5) var(--size-4-3);
+  }
+
+  .ebbinghaus-dashboard-header {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .ebbinghaus-dashboard-header .ebbinghaus-refresh-data {
+    width: 100%;
   }
 
   .ebbinghaus-dashboard-review-card {

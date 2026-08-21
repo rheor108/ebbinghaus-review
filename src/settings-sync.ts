@@ -1,3 +1,6 @@
+export const MANUAL_REFRESH_RETRY_DELAY_MS = 500;
+export const MANUAL_REFRESH_RETRY_ATTEMPTS = 20;
+
 function canonicalize(value: unknown): unknown {
   if (Array.isArray(value)) return value.map(canonicalize);
   if (!value || typeof value !== "object") return value;

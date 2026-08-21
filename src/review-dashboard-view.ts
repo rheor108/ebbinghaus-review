@@ -1,4 +1,4 @@
-import { ItemView, WorkspaceLeaf } from "obsidian";
+import { ItemView, setIcon, WorkspaceLeaf } from "obsidian";
 import type EbbinghausReviewPlugin from "./main";
 import type { ReviewItem } from "./main";
 import { daysUntil, parseDateKey } from "./scheduler";
@@ -63,6 +63,17 @@ export class ReviewDashboardView extends ItemView {
     });
     heading.createEl("h2", { text: this.plugin.i18n.t("studyDashboard") });
     heading.createEl("p", { text: this.plugin.i18n.t("dashboardSubtitle") });
+
+    const refresh = header.createEl("button", {
+      cls: "ebbinghaus-refresh-data",
+      attr: { type: "button" },
+    });
+    const refreshIcon = refresh.createSpan({ cls: "ebbinghaus-refresh-data-icon" });
+    setIcon(refreshIcon, "refresh-cw");
+    refresh.createSpan({ text: this.plugin.i18n.t("refresh") });
+    refresh.addEventListener("click", () => {
+      void this.refreshSyncedData(refresh);
+    });
 
     const tabs = content.createDiv({ cls: "ebbinghaus-dashboard-tabs", attr: { role: "tablist" } });
     this.renderTabButton(tabs, "today", this.plugin.i18n.t("todayReview"));
@@ -256,5 +267,18 @@ export class ReviewDashboardView extends ItemView {
   private async runAndRefresh(action: () => Promise<void>): Promise<void> {
     await this.plugin.withNoticeErrors(action);
     await this.render();
+  }
+
+  private async refreshSyncedData(button: HTMLButtonElement): Promise<void> {
+    button.disabled = true;
+    button.addClass("is-loading");
+    try {
+      await this.plugin.refreshSyncedData();
+    } finally {
+      if (button.isConnected) {
+        button.disabled = false;
+        button.removeClass("is-loading");
+      }
+    }
   }
 }

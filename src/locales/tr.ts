@@ -110,7 +110,8 @@ const messages: MessageDictionary = {
   "systemNotificationsSetting": "Sistem bildirimleri",
   "systemNotificationsDesc": "İzin verildiğinde işletim sistemi bildirimlerini de göster.",
   "systemNotificationUnavailable": "Bu cihazda sistem bildirimleri kullanılamıyor.",
-  "systemNotificationPermissionDenied": "Sistem bildirim izni verilmedi."
+  "systemNotificationPermissionDenied": "Sistem bildirim izni verilmedi.",
+  "refresh": "Yenile"
 };
 
 export default messages;

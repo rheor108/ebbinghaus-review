@@ -110,7 +110,8 @@ const messages: MessageDictionary = {
   "systemNotificationsSetting": "Systeemmeldingen",
   "systemNotificationsDesc": "Toon ook besturingssysteemmeldingen wanneer toestemming wordt verleend.",
   "systemNotificationUnavailable": "Systeemmeldingen zijn niet beschikbaar op dit apparaat.",
-  "systemNotificationPermissionDenied": "Er is geen toestemming voor systeemmelding verleend."
+  "systemNotificationPermissionDenied": "Er is geen toestemming voor systeemmelding verleend.",
+  "refresh": "Vernieuwen"
 };
 
 export default messages;

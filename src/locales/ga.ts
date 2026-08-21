@@ -110,7 +110,8 @@ const messages: MessageDictionary = {
   "systemNotificationsSetting": "Fógraí córais",
   "systemNotificationsDesc": "Taispeáin freisin fógraí córais oibriúcháin nuair a thugtar cead.",
   "systemNotificationUnavailable": "Níl fógraí córais ar fáil ar an ngléas seo.",
-  "systemNotificationPermissionDenied": "Níor deonaíodh cead fógra córais."
+  "systemNotificationPermissionDenied": "Níor deonaíodh cead fógra córais.",
+  "refresh": "Athnuaigh"
 };
 
 export default messages;

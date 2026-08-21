@@ -110,7 +110,8 @@ const messages: MessageDictionary = {
   "systemNotificationsSetting": "प्रणाली सूचनाहरू",
   "systemNotificationsDesc": "अनुमति दिइँदा अपरेटिङ सिस्टम सूचनाहरू पनि देखाउनुहोस्।",
   "systemNotificationUnavailable": "यस यन्त्रमा प्रणाली सूचनाहरू उपलब्ध छैनन्।",
-  "systemNotificationPermissionDenied": "प्रणाली सूचना अनुमति दिइएको थिएन।"
+  "systemNotificationPermissionDenied": "प्रणाली सूचना अनुमति दिइएको थिएन।",
+  "refresh": "ताजा पार्नुहोस्"
 };
 
 export default messages;
