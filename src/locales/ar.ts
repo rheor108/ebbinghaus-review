@@ -95,7 +95,6 @@ const messages: MessageDictionary = {
   "reviewNoScheduleStatus": "لا يوجد جدول زمني للمراجعة",
   "cannotOpenStatusPanel": "غير قادر على فتح لوحة حالة المراجعة.",
   "dueNotification": "لديك ملاحظات {count} لمراجعتها اليوم.",
-  "migrationNotice": "تم نقل سجلات مراجعة {count} إلى وحدة التخزين الداخلية وتنظيف خصائص الملاحظة.",
   "openMarkdownFirst": "افتح ملاحظة Markdown أولاً.",
   "reviewIntervalsSetting": "فترات المراجعة",
   "reviewIntervalsDesc": "أيام حتى المراجعة التالية، مفصولة بفواصل إنجليزية. مثال: 1, 3, 7, 14",

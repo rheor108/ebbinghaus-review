@@ -95,7 +95,6 @@ const messages: MessageDictionary = {
   "reviewNoScheduleStatus": "Немає розкладу повторень",
   "cannotOpenStatusPanel": "Не вдалося відкрити панель повторень.",
   "dueNotification": "Сьогодні потрібно повторити {count} нотаток.",
-  "migrationNotice": "{count} записів повторень переміщено до внутрішнього сховища; властивості нотаток очищено.",
   "openMarkdownFirst": "Спочатку відкрийте нотатку Markdown.",
   "reviewIntervalsSetting": "Інтервали повторень",
   "reviewIntervalsDesc": "Кількість днів до наступного повторення, розділена комами. Приклад: 1, 3, 7, 14",

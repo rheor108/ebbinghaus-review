@@ -95,7 +95,6 @@ const messages: MessageDictionary = {
   "reviewNoScheduleStatus": "无复习计划",
   "cannotOpenStatusPanel": "无法打开复习状态面板。",
   "dueNotification": "您今天有 {count} 笔记需要复习。",
-  "migrationNotice": "已将 {count} 条复习记录移至内部存储并清理笔记属性。",
   "openMarkdownFirst": "请先打开一个 Markdown 笔记。",
   "reviewIntervalsSetting": "复习间隔",
   "reviewIntervalsDesc": "每次完成后到下一次复习的天数以半角逗号分隔。示例：1, 3, 7, 14",

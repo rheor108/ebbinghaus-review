@@ -95,7 +95,6 @@ const messages: MessageDictionary = {
   "reviewNoScheduleStatus": "Нет расписания повторений",
   "cannotOpenStatusPanel": "Не удалось открыть панель повторений.",
   "dueNotification": "Сегодня нужно повторить {count} заметок.",
-  "migrationNotice": "{count} записей повторений перенесено во внутреннее хранилище; свойства заметок очищены.",
   "openMarkdownFirst": "Сначала откройте заметку Markdown.",
   "reviewIntervalsSetting": "Интервалы повторений",
   "reviewIntervalsDesc": "Количество дней до следующего повторения, разделённое запятыми. Пример: 1, 3, 7, 14",

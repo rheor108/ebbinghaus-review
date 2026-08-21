@@ -95,7 +95,6 @@ const messages: MessageDictionary = {
   "reviewNoScheduleStatus": "Kein Wiederholungsplan",
   "cannotOpenStatusPanel": "Wiederholungsstatus kann nicht geöffnet werden.",
   "dueNotification": "Heute sind {count} Notizen zu wiederholen.",
-  "migrationNotice": "{count} Wiederholungsdatensätze in den internen Speicher verschoben und Notizeigenschaften bereinigt.",
   "openMarkdownFirst": "Öffnen Sie zunächst eine Markdown-Notiz.",
   "reviewIntervalsSetting": "Wiederholungsintervalle",
   "reviewIntervalsDesc": "Kommagetrennte Anzahl von Tagen bis zur nächsten Wiederholung. Beispiel: 1, 3, 7, 14",

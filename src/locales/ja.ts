@@ -95,7 +95,6 @@ const messages: MessageDictionary = {
   "reviewNoScheduleStatus": "復習スケジュールなし",
   "cannotOpenStatusPanel": "復習状況パネルを開けません。",
   "dueNotification": "今日復習するノートが{count}件あります。",
-  "migrationNotice": "復習記録{count}件を内部ストレージへ移動し、ノートのプロパティを整理しました。",
   "openMarkdownFirst": "先に Markdown ノートを開いてください。",
   "reviewIntervalsSetting": "復習間隔",
   "reviewIntervalsDesc": "各復習完了後、次の復習までの日数を半角カンマで区切ります。例: 1, 3, 7, 14",

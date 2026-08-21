@@ -95,7 +95,6 @@ const messages: MessageDictionary = {
   "reviewNoScheduleStatus": "Nessun programma di ripasso",
   "cannotOpenStatusPanel": "Impossibile aprire il pannello dei ripassi.",
   "dueNotification": "Hai {count} note da ripassare oggi.",
-  "migrationNotice": "Spostati {count} record di ripasso nella memoria interna e ripulite le proprietà delle note.",
   "openMarkdownFirst": "Apri prima una nota Markdown.",
   "reviewIntervalsSetting": "Intervalli di ripasso",
   "reviewIntervalsDesc": "Numero di giorni, separati da virgole, prima del ripasso successivo. Esempio: 1, 3, 7, 14",

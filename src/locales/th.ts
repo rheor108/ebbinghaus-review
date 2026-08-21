@@ -95,7 +95,6 @@ const messages: MessageDictionary = {
   "reviewNoScheduleStatus": "ไม่มีกำหนดการทบทวน",
   "cannotOpenStatusPanel": "ไม่สามารถเปิดแผงสถานะการทบทวนได้",
   "dueNotification": "วันนี้คุณมีบันทึกที่ต้องทบทวน {count} รายการ",
-  "migrationNotice": "ย้ายบันทึกการทบทวน {count} รายการไปยังที่จัดเก็บข้อมูลภายในและล้างคุณสมบัติบันทึกแล้ว",
   "openMarkdownFirst": "เปิดบันทึก Markdown ก่อน",
   "reviewIntervalsSetting": "ช่วงการทบทวน",
   "reviewIntervalsDesc": "จำนวนวันจนถึงการทบทวนครั้งถัดไป คั่นด้วยจุลภาค ตัวอย่าง: 1, 3, 7, 14",

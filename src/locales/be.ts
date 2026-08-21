@@ -95,7 +95,6 @@ const messages: MessageDictionary = {
   "reviewNoScheduleStatus": "Няма раскладу паўтарэнняў",
   "cannotOpenStatusPanel": "Немагчыма адкрыць панэль паўтарэнняў.",
   "dueNotification": "Сёння трэба паўтарыць {count} нататак.",
-  "migrationNotice": "{count} запісаў паўтарэнняў перамешчана ва ўнутранае сховішча; уласцівасці нататак ачышчаны.",
   "openMarkdownFirst": "Спачатку адкрыйце нататку Markdown.",
   "reviewIntervalsSetting": "Інтэрвалы паўтарэнняў",
   "reviewIntervalsDesc": "Колькасць дзён да наступнага паўтарэння, раздзеленая коскамі. Прыклад: 1, 3, 7, 14",

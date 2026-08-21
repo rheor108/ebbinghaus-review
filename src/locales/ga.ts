@@ -95,7 +95,6 @@ const messages: MessageDictionary = {
   "reviewNoScheduleStatus": "Gan sceideal athbhreithnithe",
   "cannotOpenStatusPanel": "Ní féidir an painéal stádais athbhreithnithe a oscailt.",
   "dueNotification": "Tá nótaí {count} agat le hathbhreithniú inniu.",
-  "migrationNotice": "Aistríodh taifid athbhreithnithe {count} chuig an stóras inmheánach agus glantar airíonna nótaí.",
   "openMarkdownFirst": "Oscail nóta Markdown ar dtús.",
   "reviewIntervalsSetting": "Eatraimh athbhreithnithe",
   "reviewIntervalsDesc": "Laethanta scartha le camóga go dtí an chéad athbhreithniú eile tar éis gach críochnú. Sampla: 1, 3, 7, 14",

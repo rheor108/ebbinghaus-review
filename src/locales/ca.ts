@@ -95,7 +95,6 @@ const messages: MessageDictionary = {
   "reviewNoScheduleStatus": "Sense pla de repàs",
   "cannotOpenStatusPanel": "No es pot obrir el tauler de repassos.",
   "dueNotification": "Tens {count} notes per repassar avui.",
-  "migrationNotice": "S'han traslladat {count} registres de repàs a l'emmagatzematge intern i s'han netejat les propietats de les notes.",
   "openMarkdownFirst": "Obriu primer una nota Markdown.",
   "reviewIntervalsSetting": "Intervals de repàs",
   "reviewIntervalsDesc": "Dies separats per comes fins al repàs següent després de cada finalització. Exemple: 1, 3, 7, 14",

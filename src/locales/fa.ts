@@ -95,7 +95,6 @@ const messages: MessageDictionary = {
   "reviewNoScheduleStatus": "بدون برنامهٔ مرور",
   "cannotOpenStatusPanel": "باز کردن پنل وضعیت مرور ممکن نیست.",
   "dueNotification": "امروز یادداشت‌های {count} برای مرور دارید.",
-  "migrationNotice": "{count} سابقهٔ مرور به حافظهٔ داخلی منتقل شد و ویژگی‌های یادداشت پاک شد.",
   "openMarkdownFirst": "ابتدا یک یادداشت Markdown را باز کنید.",
   "reviewIntervalsSetting": "فاصله‌های مرور",
   "reviewIntervalsDesc": "تعداد روزها تا مرور بعدی را با ویرگول انگلیسی جدا کنید. مثال: 1, 3, 7, 14",

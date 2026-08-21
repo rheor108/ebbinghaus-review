@@ -95,7 +95,6 @@ const messages: MessageDictionary = {
   "reviewNoScheduleStatus": "אין לוח זמנים לחזרות",
   "cannotOpenStatusPanel": "לא ניתן לפתוח את לוח מצב החזרה.",
   "dueNotification": "יש לך {count} פתקים לחזרה היום.",
-  "migrationNotice": "{count} רשומות חזרה הועברו לאחסון פנימי ומאפייני הפתקים נוקו.",
   "openMarkdownFirst": "פתח תחילה הערת Markdown.",
   "reviewIntervalsSetting": "מרווחי חזרה",
   "reviewIntervalsDesc": "מספר הימים עד לחזרה הבאה, מופרדים בפסיקים. דוגמה: 1, 3, 7, 14",

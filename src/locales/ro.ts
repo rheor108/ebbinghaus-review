@@ -95,7 +95,6 @@ const messages: MessageDictionary = {
   "reviewNoScheduleStatus": "Fără program de recapitulare",
   "cannotOpenStatusPanel": "Nu se poate deschide panoul de recapitulare.",
   "dueNotification": "Aveți {count} note de recapitulat astăzi.",
-  "migrationNotice": "Au fost mutate {count} înregistrări de recapitulare în stocarea internă și au fost curățate proprietățile notelor.",
   "openMarkdownFirst": "Deschideți mai întâi o notă Markdown.",
   "reviewIntervalsSetting": "Intervale de recapitulare",
   "reviewIntervalsDesc": "Zile separate prin virgulă până la următoarea recapitulare după fiecare finalizare. Exemplu: 1, 3, 7, 14",

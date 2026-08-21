@@ -14,7 +14,7 @@ function placeholders(value: string): string[] {
 
 assert.equal(SUPPORTED_LOCALES.length, 46, "expected 46 supported Obsidian locales");
 assert.equal(translatedLocales.length, 44, "expected 44 bundled translation dictionaries");
-assert.equal(keys.length, 111, "message-key count changed; review every locale before accepting it");
+assert.equal(keys.length, 110, "message-key count changed; review every locale before accepting it");
 
 for (const locale of translatedLocales) {
   const messages = TRANSLATIONS[locale];
@@ -139,7 +139,6 @@ const studyReviewKeys: MessageKey[] = [
   "reviewNoScheduleStatus",
   "cannotOpenStatusPanel",
   "dueNotification",
-  "migrationNotice",
   "reviewIntervalsSetting",
   "reviewIntervalsDesc",
   "notificationTimeDesc",

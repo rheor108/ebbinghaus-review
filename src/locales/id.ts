@@ -95,7 +95,6 @@ const messages: MessageDictionary = {
   "reviewNoScheduleStatus": "Tidak ada jadwal pengulangan",
   "cannotOpenStatusPanel": "Tidak dapat membuka panel status pengulangan.",
   "dueNotification": "Anda memiliki {count} catatan untuk diulangi hari ini.",
-  "migrationNotice": "{count} catatan pengulangan dipindahkan ke penyimpanan internal dan properti catatan dibersihkan.",
   "openMarkdownFirst": "Buka catatan Markdown terlebih dahulu.",
   "reviewIntervalsSetting": "Interval pengulangan",
   "reviewIntervalsDesc": "Jumlah hari hingga pengulangan berikutnya, dipisahkan dengan koma. Contoh: 1, 3, 7, 14",

@@ -95,7 +95,6 @@ const messages: MessageDictionary = {
   "reviewNoScheduleStatus": "გამეორების განრიგი არ არის",
   "cannotOpenStatusPanel": "გამეორების სტატუსის პანელის გახსნა შეუძლებელია.",
   "dueNotification": "დღეს {count} ჩანაწერის გამეორება გაქვთ.",
-  "migrationNotice": "{count} გამეორების ჩანაწერი შიდა საცავში გადაიტანეს და ჩანაწერის თვისებები გაასუფთავეს.",
   "openMarkdownFirst": "ჯერ გახსენით Markdown შენიშვნა.",
   "reviewIntervalsSetting": "გამეორების ინტერვალები",
   "reviewIntervalsDesc": "მომდევნო გამეორებამდე დღეების რაოდენობა, მძიმით გამოყოფილი. მაგალითი: 1, 3, 7, 14",

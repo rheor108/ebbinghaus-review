@@ -95,7 +95,6 @@ const messages: MessageDictionary = {
   "reviewNoScheduleStatus": "Nincs ismétlési ütemterv",
   "cannotOpenStatusPanel": "Nem lehet megnyitni az ismétlési állapotpanelt.",
   "dueNotification": "Ma {count} jegyzetet kell ismételned.",
-  "migrationNotice": "{count} ismétlési rekord átkerült a belső tárhelyre, a jegyzettulajdonságok pedig törlődtek.",
   "openMarkdownFirst": "Először nyisson meg egy Markdown jegyzetet.",
   "reviewIntervalsSetting": "Ismétlési időközök",
   "reviewIntervalsDesc": "A következő ismétlésig eltelt napok vesszővel elválasztva. Példa: 1, 3, 7, 14",

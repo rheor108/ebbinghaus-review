@@ -95,7 +95,6 @@ const messages: MessageDictionary = {
   "reviewNoScheduleStatus": "Geen herhalingsschema",
   "cannotOpenStatusPanel": "Kan het herhalingspaneel niet openen.",
   "dueNotification": "Je hebt vandaag {count} notities om te herhalen.",
-  "migrationNotice": "{count} herhalingsrecords naar de interne opslag verplaatst en notitie-eigenschappen opgeschoond.",
   "openMarkdownFirst": "Open eerst een Markdown-notitie.",
   "reviewIntervalsSetting": "Herhalingsintervallen",
   "reviewIntervalsDesc": "Door komma’s gescheiden aantal dagen tot de volgende herhaling. Voorbeeld: 1, 3, 7, 14",

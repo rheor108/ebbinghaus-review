@@ -95,7 +95,6 @@ const messages: MessageDictionary = {
   "reviewNoScheduleStatus": "Sin plan de repaso",
   "cannotOpenStatusPanel": "No se puede abrir el panel de repasos.",
   "dueNotification": "Tienes {count} notas para repasar hoy.",
-  "migrationNotice": "Se trasladaron {count} registros de repaso al almacenamiento interno y se limpiaron las propiedades de las notas.",
   "openMarkdownFirst": "Abra primero una nota Markdown.",
   "reviewIntervalsSetting": "Intervalos de repaso",
   "reviewIntervalsDesc": "Días separados por comas hasta el siguiente repaso después de cada finalización. Ejemplo: 1, 3, 7, 14",

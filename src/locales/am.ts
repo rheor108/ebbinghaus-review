@@ -95,7 +95,6 @@ const messages: MessageDictionary = {
   "reviewNoScheduleStatus": "የክለሳ መርሐግብር የለም።",
   "cannotOpenStatusPanel": "የክለሳ ሁኔታ ፓነልን መክፈት አልተቻለም።",
   "dueNotification": "ዛሬ ለክለሳ {count} ማስታወሻዎች አሉዎት።",
-  "migrationNotice": "የ{count} የክለሳ መዝገቦችን ወደ ውስጣዊ ማከማቻ ተንቀሳቅሷል እና የማስታወሻ ንብረቶችን ያጸዱ።",
   "openMarkdownFirst": "መጀመሪያ Markdown ማስታወሻ ይክፈቱ።",
   "reviewIntervalsSetting": "የክለሳ ክፍተቶች",
   "reviewIntervalsDesc": "እስከ ቀጣዩ ክለሳ ድረስ ያሉ ቀናትን በእንግሊዝኛ ነጠላ ሰረዝ ይለዩ። ምሳሌ፡ 1, 3, 7, 14",

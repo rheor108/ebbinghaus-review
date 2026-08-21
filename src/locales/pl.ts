@@ -95,7 +95,6 @@ const messages: MessageDictionary = {
   "reviewNoScheduleStatus": "Brak harmonogramu powtórek",
   "cannotOpenStatusPanel": "Nie można otworzyć panelu powtórek.",
   "dueNotification": "Masz dziś {count} notatek do powtórki.",
-  "migrationNotice": "Przeniesiono {count} rekordów powtórek do pamięci wewnętrznej i wyczyszczono właściwości notatek.",
   "openMarkdownFirst": "Najpierw otwórz notatkę Markdown.",
   "reviewIntervalsSetting": "Interwały powtórek",
   "reviewIntervalsDesc": "Liczba dni, rozdzielona przecinkami, do kolejnych powtórek. Przykład: 1, 3, 7, 14",

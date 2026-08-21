@@ -95,7 +95,6 @@ const messages: MessageDictionary = {
   "reviewNoScheduleStatus": "Không có lịch ôn tập",
   "cannotOpenStatusPanel": "Không thể mở bảng trạng thái ôn tập.",
   "dueNotification": "Bạn có {count} ghi chú cần ôn tập hôm nay.",
-  "migrationNotice": "Đã chuyển {count} bản ghi ôn tập sang bộ nhớ trong và dọn sạch các thuộc tính ghi chú.",
   "openMarkdownFirst": "Trước tiên hãy mở ghi chú Markdown.",
   "reviewIntervalsSetting": "Khoảng cách ôn tập",
   "reviewIntervalsDesc": "Số ngày đến lần ôn tập tiếp theo, phân tách bằng dấu phẩy. Ví dụ: 1, 3, 7, 14",

@@ -68,3 +68,19 @@ test("uses Obsidian's external settings callback instead of frequent polling", (
   assert.doesNotMatch(mainSource, /startSettingsSync/);
   assert.doesNotMatch(mainSource, /setInterval\([\s\S]{0,160}synchronizeSettingsFromDisk/);
 });
+
+test("publishes searchable declarative settings with a legacy fallback", () => {
+  assert.match(mainSource, /getSettingDefinitions\(\): SettingDefinitionItem\[\]/);
+  assert.match(mainSource, /type: "group"/);
+  assert.match(mainSource, /items: this\.getSettingRows\(\)\.map/);
+  assert.match(mainSource, /display\(\): void \{\s+this\.renderLegacySettings\(\)/);
+  assert.match(mainSource, /this\.settingTab\?\.refresh\(\)/);
+  assert.doesNotMatch(mainSource, /this\.settingTab\?\.display\(\)/);
+});
+
+test("does not enumerate the vault for legacy schedule migration", () => {
+  assert.doesNotMatch(mainSource, /getMarkdownFiles\(\)/);
+  assert.doesNotMatch(mainSource, /getFiles\(\)/);
+  assert.doesNotMatch(mainSource, /migrateLegacySchedules/);
+  assert.doesNotMatch(mainSource, /propertyPrefix/);
+});

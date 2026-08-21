@@ -95,7 +95,6 @@ const messages: MessageDictionary = {
   "reviewNoScheduleStatus": "Nav atkārtošanas grafika",
   "cannotOpenStatusPanel": "Nevar atvērt atkārtošanas statusa paneli.",
   "dueNotification": "Šodien jāatkārto {count} piezīmes.",
-  "migrationNotice": "{count} atkārtošanas ieraksti tika pārvietoti uz iekšējo atmiņu, un piezīmju rekvizīti tika iztīrīti.",
   "openMarkdownFirst": "Vispirms atveriet Markdown piezīmi.",
   "reviewIntervalsSetting": "Atkārtošanas intervāli",
   "reviewIntervalsDesc": "Dienu skaits līdz nākamajai atkārtošanai, atdalīts ar komatiem. Piemērs: 1, 3, 7, 14",

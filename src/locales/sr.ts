@@ -95,7 +95,6 @@ const messages: MessageDictionary = {
   "reviewNoScheduleStatus": "Нема распореда понављања",
   "cannotOpenStatusPanel": "Није могуће отворити панел понављања.",
   "dueNotification": "Данас треба да поновите {count} белешки.",
-  "migrationNotice": "{count} записа понављања је премештено у интерну меморију; својства белешки су очишћена.",
   "openMarkdownFirst": "Прво отворите Markdown белешку.",
   "reviewIntervalsSetting": "Интервали понављања",
   "reviewIntervalsDesc": "Број дана до следећег понављања, раздвојен зарезима. Пример: 1, 3, 7, 14",

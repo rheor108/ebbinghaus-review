@@ -95,7 +95,6 @@ const messages: MessageDictionary = {
   "reviewNoScheduleStatus": "Takrorlash jadvali yo‘q",
   "cannotOpenStatusPanel": "Takrorlash holati panelini ochib bo‘lmadi.",
   "dueNotification": "Bugun takrorlashingiz kerak bo‘lgan {count} qaydingiz bor.",
-  "migrationNotice": "{count} takrorlash yozuvi ichki xotiraga ko‘chirildi va qayd xususiyatlari tozalandi.",
   "openMarkdownFirst": "Avval Markdown eslatmasini oching.",
   "reviewIntervalsSetting": "Takrorlash intervallari",
   "reviewIntervalsDesc": "Keyingi takrorlashgacha bo‘lgan kunlar sonini vergul bilan ajrating. Misol: 1, 3, 7, 14",

@@ -95,7 +95,6 @@ const messages: MessageDictionary = {
   "reviewNoScheduleStatus": "Inget repetitionsschema",
   "cannotOpenStatusPanel": "Det gick inte att öppna repetitionsstatuspanelen.",
   "dueNotification": "Du har {count} anteckningar att repetera idag.",
-  "migrationNotice": "Flyttade {count} repetitionsposter till intern lagring och rensade anteckningsegenskaper.",
   "openMarkdownFirst": "Öppna en Markdown-anteckning först.",
   "reviewIntervalsSetting": "Repetitionsintervaller",
   "reviewIntervalsDesc": "Kommaseparerade dagar till nästa repetition efter varje slutförande. Exempel: 1, 3, 7, 14",

@@ -94,7 +94,6 @@ export const EN_MESSAGES = {
   reviewNoScheduleStatus: "No review schedule",
   cannotOpenStatusPanel: "Unable to open the review status panel.",
   dueNotification: "You have {count} notes to review today.",
-  migrationNotice: "Moved {count} review records to internal storage and cleaned up note properties.",
   openMarkdownFirst: "Open a Markdown note first.",
   reviewIntervalsSetting: "Review intervals",
   reviewIntervalsDesc: "Comma-separated days until the next review after each completion. Example: 1, 3, 7, 14",

@@ -95,7 +95,6 @@ const messages: MessageDictionary = {
   "reviewNoScheduleStatus": "មិនមានកាលវិភាគរំលឹកមេរៀនទេ។",
   "cannotOpenStatusPanel": "មិនអាចបើកផ្ទាំងស្ថានភាពរំលឹកមេរៀនបានទេ។",
   "dueNotification": "អ្នកមានកំណត់ចំណាំ {count} ដើម្បីរំលឹកមេរៀនថ្ងៃនេះ។",
-  "migrationNotice": "បានផ្លាស់ទីកំណត់ត្រារំលឹកមេរៀន {count} ទៅកន្លែងផ្ទុកខាងក្នុង និងសម្អាតលក្ខណៈសម្បត្តិចំណាំ។",
   "openMarkdownFirst": "បើកចំណាំ Markdown ជាមុនសិន។",
   "reviewIntervalsSetting": "ចន្លោះការរំលឹកមេរៀន",
   "reviewIntervalsDesc": "ចំនួនថ្ងៃរហូតដល់ការរំលឹកមេរៀនបន្ទាប់ បំបែកដោយសញ្ញាក្បៀស។ ឧទាហរណ៍៖ 1, 3, 7, 14",

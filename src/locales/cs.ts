@@ -95,7 +95,6 @@ const messages: MessageDictionary = {
   "reviewNoScheduleStatus": "Žádný plán opakování",
   "cannotOpenStatusPanel": "Nelze otevřít panel opakování.",
   "dueNotification": "Dnes máte {count} poznámek k opakování.",
-  "migrationNotice": "Přesunuto {count} záznamů opakování do interního úložiště a vyčištěny vlastnosti poznámek.",
   "openMarkdownFirst": "Nejprve otevřete poznámku Markdown.",
   "reviewIntervalsSetting": "Intervaly opakování",
   "reviewIntervalsDesc": "Dny oddělené čárkami do dalšího opakování po každém dokončení. Příklad: 1, 3, 7, 14",

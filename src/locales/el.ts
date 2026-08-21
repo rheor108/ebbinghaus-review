@@ -95,7 +95,6 @@ const messages: MessageDictionary = {
   "reviewNoScheduleStatus": "Δεν υπάρχει πρόγραμμα επανάληψης",
   "cannotOpenStatusPanel": "Δεν είναι δυνατό το άνοιγμα του πίνακα κατάστασης επανάληψης.",
   "dueNotification": "Έχετε {count} σημειώσεις για επανάληψη σήμερα.",
-  "migrationNotice": "Μετακινήθηκαν {count} εγγραφές επανάληψης στον εσωτερικό χώρο αποθήκευσης και καθαρίστηκαν οι ιδιότητες των σημειώσεων.",
   "openMarkdownFirst": "Ανοίξτε πρώτα μια σημείωση Markdown.",
   "reviewIntervalsSetting": "Διαστήματα επανάληψης",
   "reviewIntervalsDesc": "Ημέρες μέχρι την επόμενη επανάληψη, χωρισμένες με κόμματα. Παράδειγμα: 1, 3, 7, 14",

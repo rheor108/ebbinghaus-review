@@ -95,7 +95,6 @@ const messages: MessageDictionary = {
   "reviewNoScheduleStatus": "Nuk ka orar përsëritjeje",
   "cannotOpenStatusPanel": "Paneli i statusit të përsëritjes nuk mund të hapet.",
   "dueNotification": "Keni {count} shënime për t'i përsëritur sot.",
-  "migrationNotice": "{count} regjistrime përsëritjeje u zhvendosën në hapësirën e brendshme dhe vetitë e shënimeve u pastruan.",
   "openMarkdownFirst": "Hapni fillimisht një shënim Markdown.",
   "reviewIntervalsSetting": "Intervalet e përsëritjes",
   "reviewIntervalsDesc": "Ditët deri në përsëritjen tjetër, të ndara me presje. Shembull: 1, 3, 7, 14",

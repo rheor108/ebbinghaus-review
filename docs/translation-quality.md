@@ -2,9 +2,9 @@
 
 [English](../README.md) · [한국어](../README.ko.md)
 
-Last audited: 2026-08-21
+Last audited: 2026-08-22
 
-Note Review Reminder bundles 111 UI messages for each of 44 translated locales. English and British English use the English source dictionary, bringing the total supported Obsidian locales to 46.
+Note Review Reminder bundles 110 UI messages for each of 44 translated locales. English and British English use the English source dictionary, bringing the total supported Obsidian locales to 46.
 
 ## What the audit checks
 
@@ -18,7 +18,7 @@ Note Review Reminder bundles 111 UI messages for each of 44 translated locales. 
 - preservation of the `Markdown` brand in every translated locale;
 - the exact ASCII comma-separated interval example (`1, 3, 7, 14`) accepted by the settings parser.
 
-The audit currently covers **44 locales × 111 messages = 4,884 translated strings**. It runs as part of `npm run check`.
+The audit currently covers **44 locales × 110 messages = 4,840 translated strings**. It runs as part of `npm run check`.
 
 ## Review status
 
@@ -33,9 +33,9 @@ The audit currently covers **44 locales × 111 messages = 4,884 translated strin
 ## How to review a locale
 
 1. Open `src/messages.ts` for the English meaning and the matching `src/locales/<locale>.ts` file for the locale.
-2. Review all 111 messages in the context of spaced-repetition study, not product reviews or general document inspection. Use the locale's established study-repetition term consistently.
+2. Review all 110 messages in the context of spaced-repetition study, not product reviews or general document inspection. Use the locale's established study-repetition term consistently.
 3. Keep every placeholder unchanged.
 4. Keep `Obsidian` and `Markdown` as product/format names, and follow the official Obsidian locale’s convention for “note.”
 5. Run `npm run audit:i18n` and `npm run check` before submitting changes.
 
-Native-speaker corrections are welcome. A locale should move to “manual editorial review complete” only after all 111 messages have been reviewed in context.
+Native-speaker corrections are welcome. A locale should move to “manual editorial review complete” only after all 110 messages have been reviewed in context.

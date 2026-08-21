@@ -95,7 +95,6 @@ const messages: MessageDictionary = {
   "reviewNoScheduleStatus": "無複習計畫",
   "cannotOpenStatusPanel": "無法開啟複習狀態面板。",
   "dueNotification": "您今天有 {count} 筆記需要複習。",
-  "migrationNotice": "已將 {count} 筆複習記錄移至內部儲存並清理筆記屬性。",
   "openMarkdownFirst": "請先開啟一個 Markdown 筆記。",
   "reviewIntervalsSetting": "複習間隔",
   "reviewIntervalsDesc": "每次完成後到下一次複習的天數以半形逗號分隔。例：1, 3, 7, 14",

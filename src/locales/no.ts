@@ -95,7 +95,6 @@ const messages: MessageDictionary = {
   "reviewNoScheduleStatus": "Ingen repetisjonsplan",
   "cannotOpenStatusPanel": "Kan ikke åpne repetisjonsstatuspanelet.",
   "dueNotification": "Du har {count} notater å repetere i dag.",
-  "migrationNotice": "Flyttet {count} repetisjonsoppføringer til intern lagring og ryddet opp i notategenskaper.",
   "openMarkdownFirst": "Åpne et Markdown-notat først.",
   "reviewIntervalsSetting": "Repetisjonsintervaller",
   "reviewIntervalsDesc": "Kommaseparerte dager til neste repetisjon etter hver fullføring. Eksempel: 1, 3, 7, 14",

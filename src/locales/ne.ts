@@ -95,7 +95,6 @@ const messages: MessageDictionary = {
   "reviewNoScheduleStatus": "कुनै पुनरावृत्ति तालिका छैन",
   "cannotOpenStatusPanel": "पुनरावृत्ति स्थिति प्यानल खोल्न असमर्थ।",
   "dueNotification": "तपाईंसँग आज पुनरावृत्ति गर्नको लागि {count} नोटहरू छन्।",
-  "migrationNotice": "{count} पुनरावृत्ति रेकर्डहरूलाई आन्तरिक भण्डारणमा सारियो र नोट गुणहरू सफा गरियो।",
   "openMarkdownFirst": "पहिले Markdown नोट खोल्नुहोस्।",
   "reviewIntervalsSetting": "पुनरावृत्तिको अन्तराल",
   "reviewIntervalsDesc": "अर्को पुनरावृत्तिसम्मका दिनहरू अल्पविरामले छुट्याउनुहोस्। उदाहरण: 1, 3, 7, 14",

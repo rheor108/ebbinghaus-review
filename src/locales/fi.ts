@@ -95,7 +95,6 @@ const messages: MessageDictionary = {
   "reviewNoScheduleStatus": "Ei kertausaikataulua",
   "cannotOpenStatusPanel": "Kertaustilapaneelia ei voi avata.",
   "dueNotification": "Sinulla on tänään {count} kerrattavaa muistiinpanoa.",
-  "migrationNotice": "{count} kertaustietuetta siirrettiin sisäiseen tallennustilaan ja muistiinpanojen ominaisuudet siivottiin.",
   "openMarkdownFirst": "Avaa ensin Markdown-muistiinpano.",
   "reviewIntervalsSetting": "Kertausvälit",
   "reviewIntervalsDesc": "Seuraavaan kertaukseen kuluvien päivien määrät pilkuilla erotettuina. Esimerkki: 1, 3, 7, 14",

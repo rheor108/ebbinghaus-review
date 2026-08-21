@@ -95,7 +95,6 @@ const messages: MessageDictionary = {
   "reviewNoScheduleStatus": "Tekrar programı yok",
   "cannotOpenStatusPanel": "Tekrar durumu paneli açılamıyor.",
   "dueNotification": "Bugün tekrarlamanız gereken {count} not var.",
-  "migrationNotice": "{count} tekrar kaydı dahili depolamaya taşındı ve not özellikleri temizlendi.",
   "openMarkdownFirst": "Önce bir Markdown notu açın.",
   "reviewIntervalsSetting": "Tekrar aralıkları",
   "reviewIntervalsDesc": "Sonraki tekrara kadar geçecek günleri virgülle ayırın. Örnek: 1, 3, 7, 14",

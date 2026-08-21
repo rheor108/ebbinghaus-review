@@ -95,7 +95,6 @@ const messages: MessageDictionary = {
   "reviewNoScheduleStatus": "কোনো পুনরাবৃত্তির সময়সূচি নেই",
   "cannotOpenStatusPanel": "পুনরাবৃত্তি স্ট্যাটাস প্যানেল খুলতে অক্ষম।",
   "dueNotification": "আজ পুনরাবৃত্তি করার জন্য আপনার কাছে {count} নোট রয়েছে৷",
-  "migrationNotice": "{count} পুনরাবৃত্তি রেকর্ডগুলি অভ্যন্তরীণ সঞ্চয়স্থানে সরানো হয়েছে এবং নোট বৈশিষ্ট্যগুলি পরিষ্কার করা হয়েছে৷",
   "openMarkdownFirst": "প্রথমে একটি Markdown নোট খুলুন।",
   "reviewIntervalsSetting": "পুনরাবৃত্তির ব্যবধান",
   "reviewIntervalsDesc": "পরবর্তী পুনরাবৃত্তি পর্যন্ত দিনের সংখ্যা কমা দিয়ে আলাদা করুন। উদাহরণ: 1, 3, 7, 14",

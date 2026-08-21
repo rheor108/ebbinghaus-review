@@ -95,7 +95,6 @@ const messages: MessageDictionary = {
   "reviewNoScheduleStatus": "Žiadny plán opakovania",
   "cannotOpenStatusPanel": "Nie je možné otvoriť panel opakovaní.",
   "dueNotification": "Dnes máte {count} poznámok na opakovanie.",
-  "migrationNotice": "Presunutých {count} záznamov opakovania do interného úložiska a vyčistené vlastnosti poznámok.",
   "openMarkdownFirst": "Najprv otvorte poznámku Markdown.",
   "reviewIntervalsSetting": "Intervaly opakovania",
   "reviewIntervalsDesc": "Dni oddelené čiarkami do ďalšieho opakovania po každom dokončení. Príklad: 1, 3, 7, 14",

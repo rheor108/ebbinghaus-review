@@ -95,7 +95,6 @@ const messages: MessageDictionary = {
   "reviewNoScheduleStatus": "Aucun planning de révision",
   "cannotOpenStatusPanel": "Impossible d’ouvrir le panneau de révision.",
   "dueNotification": "Vous avez {count} notes à réviser aujourd’hui.",
-  "migrationNotice": "{count} entrées de révision transférées vers le stockage interne et propriétés des notes nettoyées.",
   "openMarkdownFirst": "Ouvrez d’abord une note Markdown.",
   "reviewIntervalsSetting": "Intervalles de révision",
   "reviewIntervalsDesc": "Nombre de jours, séparés par des virgules, avant chaque prochaine révision. Exemple : 1, 3, 7, 14",

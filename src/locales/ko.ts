@@ -95,7 +95,6 @@ const messages: MessageDictionary = {
   "reviewNoScheduleStatus": "복습 일정 없음",
   "cannotOpenStatusPanel": "복습 현황 패널을 열 수 없습니다.",
   "dueNotification": "오늘 복습할 노트가 {count}개 있습니다.",
-  "migrationNotice": "복습 정보 {count}개를 내부 저장소로 이전하고 노트 속성을 정리했습니다.",
   "openMarkdownFirst": "먼저 Markdown 노트를 여세요.",
   "reviewIntervalsSetting": "복습 간격",
   "reviewIntervalsDesc": "각 복습 완료 후 다음 복습까지의 일수를 쉼표로 구분합니다. 예: 1, 3, 7, 14",
