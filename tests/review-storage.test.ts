@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import {
+  getLegacyPropertyFields,
   getLegacyPropertyNames,
   hasLegacyProperties,
   normalizeStoredSchedule,
@@ -8,6 +9,17 @@ import {
 } from "../src/review-storage";
 
 const fields = getLegacyPropertyNames("ebbinghaus_review");
+
+test("lists every legacy property used during migration cleanup", () => {
+  assert.deepEqual(getLegacyPropertyFields(fields), [
+    "ebbinghaus_review_enabled",
+    "ebbinghaus_review_started",
+    "ebbinghaus_review_stage",
+    "ebbinghaus_review_next",
+    "ebbinghaus_review_last",
+    "ebbinghaus_review_history",
+  ]);
+});
 
 test("reads a legacy frontmatter schedule for internal migration", () => {
   assert.deepEqual(readLegacySchedule({

@@ -33,9 +33,21 @@ export function getLegacyPropertyNames(prefix: string): LegacyPropertyNames {
   };
 }
 
+export function getLegacyPropertyFields(fields: LegacyPropertyNames): string[] {
+  return [
+    fields.enabled,
+    fields.started,
+    fields.stage,
+    fields.next,
+    fields.last,
+    fields.history,
+  ];
+}
+
 export function normalizeStoredSchedule(value: unknown): StoredReviewSchedule | null {
   if (!value || typeof value !== "object") return null;
   const schedule = value as Record<string, unknown>;
+  const rawHistory: unknown = schedule.history;
   if (
     typeof schedule.enabled !== "boolean" ||
     typeof schedule.startedDate !== "string" ||
@@ -44,8 +56,8 @@ export function normalizeStoredSchedule(value: unknown): StoredReviewSchedule | 
     Number(schedule.stage) < 0 ||
     !validDateOrNull(schedule.nextDate) ||
     !validDateOrNull(schedule.lastDate) ||
-    !Array.isArray(schedule.history) ||
-    !schedule.history.every((date) => validDateOrNull(date))
+    !Array.isArray(rawHistory) ||
+    !rawHistory.every((date: unknown) => validDateOrNull(date))
   ) {
     return null;
   }
@@ -56,7 +68,7 @@ export function normalizeStoredSchedule(value: unknown): StoredReviewSchedule | 
     stage: Number(schedule.stage),
     nextDate: schedule.nextDate,
     lastDate: schedule.lastDate,
-    history: [...schedule.history],
+    history: rawHistory.map((date: unknown) => validDateOrNull(date) ? date : null),
   };
 }
 
@@ -99,5 +111,6 @@ export function hasLegacyProperties(
 ): boolean {
   if (!frontmatter || typeof frontmatter !== "object") return false;
   const values = frontmatter as Record<string, unknown>;
-  return Object.values(fields).some((field) => Object.prototype.hasOwnProperty.call(values, field));
+  return getLegacyPropertyFields(fields)
+    .some((field) => Object.prototype.hasOwnProperty.call(values, field));
 }

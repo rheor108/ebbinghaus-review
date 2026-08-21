@@ -53,7 +53,7 @@ export class ReviewStatusView extends ItemView {
     const file = this.plugin.getActiveMarkdownFile();
     const header = content.createDiv({ cls: "ebbinghaus-status-header" });
     const titleBlock = header.createDiv();
-    titleBlock.createEl("div", {
+    titleBlock.createDiv({
       cls: "ebbinghaus-status-eyebrow",
       text: this.plugin.i18n.t("currentNote"),
     });
@@ -103,7 +103,7 @@ export class ReviewStatusView extends ItemView {
         : state.status === "paused"
           ? this.plugin.i18n.t("schedulePaused")
           : this.plugin.i18n.t("noSchedule");
-    header.createEl("span", {
+    header.createSpan({
       cls: `ebbinghaus-status-badge is-${state.status}`,
       text: badgeText,
     });
@@ -115,7 +115,7 @@ export class ReviewStatusView extends ItemView {
 
     const progressCard = content.createDiv({ cls: "ebbinghaus-progress-card" });
     const progressTop = progressCard.createDiv({ cls: "ebbinghaus-progress-top" });
-    progressTop.createEl("span", { text: this.plugin.i18n.t("overallProgress") });
+    progressTop.createSpan({ text: this.plugin.i18n.t("overallProgress") });
     progressTop.createEl("strong", {
       text: this.plugin.i18n.t("progressComplete", {
         completed: state.completedCount,
@@ -134,7 +134,7 @@ export class ReviewStatusView extends ItemView {
     const steps = progressCard.createDiv({ cls: "ebbinghaus-progress-steps" });
     for (let index = 0; index < state.totalStages; index += 1) {
       const stepState = state.steps[index];
-      const step = steps.createEl("span", {
+      const step = steps.createSpan({
         cls: index < state.completedCount
           ? "is-complete"
           : index === state.completedCount && state.status === "active"
@@ -172,7 +172,7 @@ export class ReviewStatusView extends ItemView {
     );
 
     const schedule = content.createDiv({ cls: "ebbinghaus-schedule-preview" });
-    schedule.createEl("div", {
+    schedule.createDiv({
       cls: "ebbinghaus-status-eyebrow",
       text: this.plugin.i18n.t("reviewIntervals"),
     });
@@ -222,7 +222,7 @@ export class ReviewStatusView extends ItemView {
 
   private renderUnscheduled(content: HTMLElement, file: TFile): void {
     const empty = content.createDiv({ cls: "ebbinghaus-status-empty-card" });
-    empty.createEl("div", { cls: "ebbinghaus-status-empty-icon", text: "↗" });
+    empty.createDiv({ cls: "ebbinghaus-status-empty-icon", text: "↗" });
     empty.createEl("h4", { text: this.plugin.i18n.t("noReviewScheduleYet") });
     empty.createEl("p", {
       text: this.plugin.i18n.t("startWithDefaultIntervals", {
@@ -247,7 +247,7 @@ export class ReviewStatusView extends ItemView {
     detail?: string,
   ): void {
     const row = container.createDiv({ cls: "ebbinghaus-status-fact" });
-    row.createEl("span", { text: label });
+    row.createSpan({ text: label });
     const valueBlock = row.createDiv();
     valueBlock.createEl("strong", { text: value });
     if (detail) valueBlock.createEl("small", { text: detail });

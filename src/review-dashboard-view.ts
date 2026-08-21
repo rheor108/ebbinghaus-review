@@ -57,7 +57,7 @@ export class ReviewDashboardView extends ItemView {
 
     const header = content.createDiv({ cls: "ebbinghaus-dashboard-header" });
     const heading = header.createDiv();
-    heading.createEl("div", {
+    heading.createDiv({
       cls: "ebbinghaus-status-eyebrow",
       text: this.plugin.manifest.name,
     });
@@ -102,7 +102,7 @@ export class ReviewDashboardView extends ItemView {
     const title = sectionHeader.createDiv();
     title.createEl("h3", { text: this.plugin.i18n.t("todayReview") });
     title.createEl("p", { text: this.plugin.i18n.t("notesDueToday") });
-    sectionHeader.createEl("span", {
+    sectionHeader.createSpan({
       cls: "ebbinghaus-dashboard-count",
       text: this.plugin.i18n.t("itemCount", { count: reviews.length }),
     });
@@ -110,7 +110,7 @@ export class ReviewDashboardView extends ItemView {
 
     if (reviews.length === 0) {
       const empty = container.createDiv({ cls: "ebbinghaus-dashboard-empty" });
-      empty.createEl("div", { cls: "ebbinghaus-dashboard-empty-mark", text: "✓" });
+      empty.createDiv({ cls: "ebbinghaus-dashboard-empty-mark", text: "✓" });
       empty.createEl("h4", { text: this.plugin.i18n.t("allReviewsDoneToday") });
       empty.createEl("p", { text: this.plugin.i18n.t("newReviewsAppear") });
       return;
@@ -125,7 +125,7 @@ export class ReviewDashboardView extends ItemView {
     const title = sectionHeader.createDiv();
     title.createEl("h3", { text: this.plugin.i18n.t("overdueReviews") });
     title.createEl("p", { text: this.plugin.i18n.t("overdueDescription") });
-    sectionHeader.createEl("span", {
+    sectionHeader.createSpan({
       cls: reviews.length > 0
         ? "ebbinghaus-dashboard-count is-overdue"
         : "ebbinghaus-dashboard-count",
@@ -135,7 +135,7 @@ export class ReviewDashboardView extends ItemView {
 
     if (reviews.length === 0) {
       const empty = container.createDiv({ cls: "ebbinghaus-dashboard-empty" });
-      empty.createEl("div", { cls: "ebbinghaus-dashboard-empty-mark", text: "✓" });
+      empty.createDiv({ cls: "ebbinghaus-dashboard-empty-mark", text: "✓" });
       empty.createEl("h4", { text: this.plugin.i18n.t("noOverdueReviews") });
       empty.createEl("p", { text: this.plugin.i18n.t("schedulesOnTime") });
       return;
@@ -149,7 +149,7 @@ export class ReviewDashboardView extends ItemView {
     for (const review of reviews) {
       const card = list.createDiv({ cls: "ebbinghaus-dashboard-review-card" });
       const main = card.createDiv({ cls: "ebbinghaus-dashboard-review-main" });
-      main.createEl("span", {
+      main.createSpan({
         cls: review.nextDate < this.plugin.todayDateKey() ? "is-overdue" : "is-today",
         text: dueLabel(this.plugin.i18n, review.nextDate),
       });
@@ -230,7 +230,7 @@ export class ReviewDashboardView extends ItemView {
     const chart = chartCard.createDiv({ cls: "ebbinghaus-activity-chart" });
     for (const day of stats.dailyActivity) {
       const column = chart.createDiv({ cls: "ebbinghaus-activity-column" });
-      const value = column.createEl("span", { text: String(day.count) });
+      const value = column.createSpan({ text: String(day.count) });
       value.addClass("ebbinghaus-activity-value");
       const track = column.createDiv({ cls: "ebbinghaus-activity-track" });
       const bar = track.createDiv({ cls: day.count > 0 ? "is-active" : "" });
@@ -243,11 +243,11 @@ export class ReviewDashboardView extends ItemView {
     }
 
     const summary = container.createDiv({ cls: "ebbinghaus-stat-summary" });
-    summary.createEl("span", { text: this.plugin.i18n.t("scheduledNotes") });
+    summary.createSpan({ text: this.plugin.i18n.t("scheduledNotes") });
     summary.createEl("strong", { text: this.plugin.i18n.t("itemCount", { count: stats.scheduledNotes }) });
-    summary.createEl("span", { text: this.plugin.i18n.t("reviewsDueToday") });
+    summary.createSpan({ text: this.plugin.i18n.t("reviewsDueToday") });
     summary.createEl("strong", { text: this.plugin.i18n.t("itemCount", { count: stats.todayDueNotes }) });
-    summary.createEl("span", { text: this.plugin.i18n.t("overdueReviews") });
+    summary.createSpan({ text: this.plugin.i18n.t("overdueReviews") });
     summary.createEl("strong", { text: this.plugin.i18n.t("itemCount", { count: stats.overdueNotes }) });
   }
 
@@ -258,7 +258,7 @@ export class ReviewDashboardView extends ItemView {
     unit: string,
   ): void {
     const card = container.createDiv({ cls: "ebbinghaus-stat-card" });
-    card.createEl("span", { text: label });
+    card.createSpan({ text: label });
     const figure = card.createDiv();
     figure.createEl("strong", { text: value });
     figure.createEl("small", { text: unit });

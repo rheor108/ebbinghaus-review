@@ -1,6 +1,6 @@
 {
   "name": "obsidian-ebbinghaus-review",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Spaced note review scheduling, progress tracking, and reminders for Obsidian",
   "main": "main.js",
   "type": "module",

@@ -37,6 +37,7 @@ import {
   type ReviewActivityEntry,
 } from "./statistics";
 import {
+  getLegacyPropertyFields,
   getLegacyPropertyNames,
   hasLegacyProperties,
   normalizeStoredSchedule,
@@ -361,8 +362,6 @@ export default class EbbinghausReviewPlugin extends Plugin {
   onunload(): void {
     this.isUnloading = true;
     this.manualRefreshGeneration += 1;
-    this.app.workspace.detachLeavesOfType(REVIEW_STATUS_VIEW_TYPE);
-    this.app.workspace.detachLeavesOfType(REVIEW_DASHBOARD_VIEW_TYPE);
   }
 
   get propertyNames() {
@@ -815,7 +814,8 @@ export default class EbbinghausReviewPlugin extends Plugin {
     let cleaned = 0;
     for (const { file, fields } of candidates) {
       await this.app.fileManager.processFrontMatter(file, (frontmatter) => {
-        for (const field of Object.values(fields)) delete frontmatter[field];
+        const legacyFrontmatter = frontmatter as Record<string, unknown>;
+        for (const field of getLegacyPropertyFields(fields)) delete legacyFrontmatter[field];
       });
       cleaned += 1;
     }
