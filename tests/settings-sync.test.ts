@@ -1,6 +1,9 @@
 import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
 import test from "node:test";
 import { settingsFingerprint } from "../src/settings-sync";
+
+const mainSource = await readFile(new URL("../src/main.ts", import.meta.url), "utf8");
 
 test("settings fingerprint ignores object key order", () => {
   const first = {
@@ -39,4 +42,12 @@ test("settings fingerprint changes with a language preference", () => {
     settingsFingerprint({ language: "auto" }),
     settingsFingerprint({ language: "ko" }),
   );
+});
+
+test("uses Obsidian's external settings callback instead of frequent polling", () => {
+  assert.match(mainSource, /async onExternalSettingsChange\(\): Promise<void>/);
+  assert.match(mainSource, /document, "visibilitychange"/);
+  assert.match(mainSource, /window, "focus"/);
+  assert.doesNotMatch(mainSource, /SETTINGS_SYNC_INTERVAL_MS/);
+  assert.doesNotMatch(mainSource, /startSettingsSync/);
 });

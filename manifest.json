@@ -1,9 +1,9 @@
 {
   "id": "ebbinghaus-review",
-  "name": "Ebbinghaus Review",
-  "version": "0.6.7",
+  "name": "Note Review Reminder",
+  "version": "1.0.0",
   "minAppVersion": "1.8.7",
-  "description": "Schedule per-note reviews with configurable Ebbinghaus-style intervals and due-date reminders.",
+  "description": "Schedule spaced reviews for notes, track what is due or overdue, and get reminders while using Obsidian.",
   "author": "seungbum",
   "isDesktopOnly": false
 }

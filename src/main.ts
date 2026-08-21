@@ -54,7 +54,7 @@ import {
 } from "./i18n";
 import type { MessageKey } from "./messages";
 import { settingsFingerprint } from "./settings-sync";
-import { pluginCommandName } from "./command-label";
+import { reregisterCommand } from "./localized-command";
 
 interface EbbinghausReviewSettings {
   language: LocalePreference;
@@ -147,8 +147,6 @@ const DEFAULT_SETTINGS: EbbinghausReviewSettings = {
   schedules: {},
 };
 
-const SETTINGS_SYNC_INTERVAL_MS = 2_000;
-
 function isCompletionUndoSnapshot(value: unknown): value is CompletionUndoSnapshot {
   if (!value || typeof value !== "object") return false;
   const snapshot = value as Record<string, unknown>;
@@ -179,9 +177,12 @@ export default class EbbinghausReviewPlugin extends Plugin {
   private dueRibbonIcon: HTMLElement | null = null;
   private statusRibbonIcon: HTMLElement | null = null;
   private settingTab: EbbinghausReviewSettingTab | null = null;
-  private readonly localizedCommands: Array<{ command: Command; key: MessageKey }> = [];
+  private readonly localizedCommands: Array<{
+    definition: Omit<Command, "name">;
+    key: MessageKey;
+    registered: Command;
+  }> = [];
   private checkIntervalId: number | null = null;
-  private settingsSyncIntervalId: number | null = null;
   private knownSettingsFingerprint = "";
   private settingsQueue: Promise<void> = Promise.resolve();
   private restoringStatusView = false;
@@ -267,7 +268,16 @@ export default class EbbinghausReviewPlugin extends Plugin {
     this.addSettingTab(this.settingTab);
 
     this.updateCheckInterval();
-    this.startSettingsSync();
+    this.registerDomEvent(document, "visibilitychange", () => {
+      if (document.visibilityState === "visible") {
+        void this.synchronizeSettingsFromDisk();
+      }
+    });
+    this.registerDomEvent(window, "focus", () => {
+      if (document.visibilityState === "visible") {
+        void this.synchronizeSettingsFromDisk();
+      }
+    });
 
     this.app.workspace.onLayoutReady(() => void this.initializeLayout());
 
@@ -287,9 +297,13 @@ export default class EbbinghausReviewPlugin extends Plugin {
     }));
   }
 
+  async onExternalSettingsChange(): Promise<void> {
+    await this.synchronizeSettingsFromDisk();
+  }
+
   private addLocalizedCommand(key: MessageKey, command: Omit<Command, "name">): void {
     const registered = this.addCommand({ ...command, name: this.i18n.t(key) });
-    this.localizedCommands.push({ command: registered, key });
+    this.localizedCommands.push({ definition: command, key, registered });
   }
 
   private applyConfiguredLanguage(): void {
@@ -304,8 +318,14 @@ export default class EbbinghausReviewPlugin extends Plugin {
     this.noteStatusBar?.setAttribute("aria-label", this.i18n.t("openStatusA11y"));
     this.dueRibbonIcon?.setAttribute("aria-label", this.i18n.t("todayReviewList"));
     this.statusRibbonIcon?.setAttribute("aria-label", this.i18n.t("currentReviewStatus"));
-    for (const { command, key } of this.localizedCommands) {
-      command.name = pluginCommandName(this.manifest.name, this.i18n.t(key));
+    for (const localized of this.localizedCommands) {
+      localized.registered = reregisterCommand(
+        localized.registered,
+        localized.definition,
+        this.i18n.t(localized.key),
+        (commandId) => this.removeCommand(commandId),
+        (command) => this.addCommand(command),
+      );
     }
   }
 
@@ -715,7 +735,7 @@ export default class EbbinghausReviewPlugin extends Plugin {
 
     if (systemNotifications && typeof Notification !== "undefined") {
       if (Notification.permission === "granted") {
-        new Notification("Ebbinghaus Review", { body: message });
+        new Notification(this.manifest.name, { body: message });
       }
     }
   }
@@ -922,17 +942,6 @@ export default class EbbinghausReviewPlugin extends Plugin {
     });
   }
 
-  private startSettingsSync(): void {
-    if (this.settingsSyncIntervalId !== null) {
-      window.clearInterval(this.settingsSyncIntervalId);
-    }
-    this.settingsSyncIntervalId = window.setInterval(
-      () => void this.synchronizeSettingsFromDisk(),
-      SETTINGS_SYNC_INTERVAL_MS,
-    );
-    this.registerInterval(this.settingsSyncIntervalId);
-  }
-
   private async synchronizeSettingsFromDisk(): Promise<void> {
     try {
       const { changed, checkIntervalChanged, languageChanged } = await this.enqueueSettingsOperation(async () => {
@@ -956,7 +965,7 @@ export default class EbbinghausReviewPlugin extends Plugin {
       await this.refreshStatus();
       if (languageChanged) this.app.workspace.trigger("layout-change");
     } catch (error) {
-      console.error("Ebbinghaus Review: failed to reload synced settings", error);
+      console.error(`${this.manifest.name}: failed to reload synced settings`, error);
     }
   }
 
@@ -1003,7 +1012,7 @@ export default class EbbinghausReviewPlugin extends Plugin {
       await action();
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
-      new Notice(`Ebbinghaus Review: ${message}`);
+      new Notice(`${this.manifest.name}: ${message}`);
     }
   }
 }
@@ -1015,7 +1024,9 @@ class EbbinghausReviewSettingTab extends PluginSettingTab {
 
   display(): void {
     this.containerEl.empty();
-    this.containerEl.createEl("h2", { text: "Ebbinghaus Review" });
+    new Setting(this.containerEl)
+      .setName(this.plugin.manifest.name)
+      .setHeading();
 
     new Setting(this.containerEl)
       .setName(this.plugin.i18n.t("languageSetting"))

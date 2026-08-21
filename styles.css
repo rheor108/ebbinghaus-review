@@ -103,6 +103,7 @@
   border-radius: inherit;
   height: 100%;
   transition: width 180ms ease;
+  width: var(--ebbinghaus-progress-width, 0%);
 }
 
 .ebbinghaus-progress-steps {
@@ -515,6 +516,7 @@ body.is-phone.auto-full-screen .workspace-leaf-content .view-content.ebbinghaus-
 .ebbinghaus-activity-track > div {
   background: var(--background-modifier-border);
   border-radius: var(--radius-s) var(--radius-s) 0 0;
+  height: var(--ebbinghaus-activity-height, 4%);
   min-height: 4px;
   transition: height 180ms ease;
   width: 100%;

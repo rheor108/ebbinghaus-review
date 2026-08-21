@@ -57,7 +57,10 @@ export class ReviewDashboardView extends ItemView {
 
     const header = content.createDiv({ cls: "ebbinghaus-dashboard-header" });
     const heading = header.createDiv();
-    heading.createEl("div", { cls: "ebbinghaus-status-eyebrow", text: "Ebbinghaus Review" });
+    heading.createEl("div", {
+      cls: "ebbinghaus-status-eyebrow",
+      text: this.plugin.manifest.name,
+    });
     heading.createEl("h2", { text: this.plugin.i18n.t("studyDashboard") });
     heading.createEl("p", { text: this.plugin.i18n.t("dashboardSubtitle") });
 
@@ -220,7 +223,11 @@ export class ReviewDashboardView extends ItemView {
       value.addClass("ebbinghaus-activity-value");
       const track = column.createDiv({ cls: "ebbinghaus-activity-track" });
       const bar = track.createDiv({ cls: day.count > 0 ? "is-active" : "" });
-      bar.style.height = `${day.count === 0 ? 4 : Math.max(18, (day.count / maxCount) * 100)}%`;
+      bar.setCssProps({
+        "--ebbinghaus-activity-height": `${day.count === 0
+          ? 4
+          : Math.max(18, (day.count / maxCount) * 100)}%`,
+      });
       column.createEl("small", { text: weekdayLabel(this.plugin.i18n, day.date) });
     }
 
