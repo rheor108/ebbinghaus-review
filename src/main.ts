@@ -147,8 +147,6 @@ const DEFAULT_SETTINGS: EbbinghausReviewSettings = {
   schedules: {},
 };
 
-const SETTINGS_SYNC_INTERVAL_MS = 2_000;
-
 function isCompletionUndoSnapshot(value: unknown): value is CompletionUndoSnapshot {
   if (!value || typeof value !== "object") return false;
   const snapshot = value as Record<string, unknown>;
@@ -185,7 +183,6 @@ export default class EbbinghausReviewPlugin extends Plugin {
     registered: Command;
   }> = [];
   private checkIntervalId: number | null = null;
-  private settingsSyncIntervalId: number | null = null;
   private knownSettingsFingerprint = "";
   private settingsQueue: Promise<void> = Promise.resolve();
   private restoringStatusView = false;
@@ -271,7 +268,16 @@ export default class EbbinghausReviewPlugin extends Plugin {
     this.addSettingTab(this.settingTab);
 
     this.updateCheckInterval();
-    this.startSettingsSync();
+    this.registerDomEvent(document, "visibilitychange", () => {
+      if (document.visibilityState === "visible") {
+        void this.synchronizeSettingsFromDisk();
+      }
+    });
+    this.registerDomEvent(window, "focus", () => {
+      if (document.visibilityState === "visible") {
+        void this.synchronizeSettingsFromDisk();
+      }
+    });
 
     this.app.workspace.onLayoutReady(() => void this.initializeLayout());
 
@@ -289,6 +295,10 @@ export default class EbbinghausReviewPlugin extends Plugin {
         void this.ensureStatusView(true);
       }
     }));
+  }
+
+  async onExternalSettingsChange(): Promise<void> {
+    await this.synchronizeSettingsFromDisk();
   }
 
   private addLocalizedCommand(key: MessageKey, command: Omit<Command, "name">): void {
@@ -725,7 +735,7 @@ export default class EbbinghausReviewPlugin extends Plugin {
 
     if (systemNotifications && typeof Notification !== "undefined") {
       if (Notification.permission === "granted") {
-        new Notification("Ebbinghaus Review", { body: message });
+        new Notification(this.manifest.name, { body: message });
       }
     }
   }
@@ -932,17 +942,6 @@ export default class EbbinghausReviewPlugin extends Plugin {
     });
   }
 
-  private startSettingsSync(): void {
-    if (this.settingsSyncIntervalId !== null) {
-      window.clearInterval(this.settingsSyncIntervalId);
-    }
-    this.settingsSyncIntervalId = window.setInterval(
-      () => void this.synchronizeSettingsFromDisk(),
-      SETTINGS_SYNC_INTERVAL_MS,
-    );
-    this.registerInterval(this.settingsSyncIntervalId);
-  }
-
   private async synchronizeSettingsFromDisk(): Promise<void> {
     try {
       const { changed, checkIntervalChanged, languageChanged } = await this.enqueueSettingsOperation(async () => {
@@ -966,7 +965,7 @@ export default class EbbinghausReviewPlugin extends Plugin {
       await this.refreshStatus();
       if (languageChanged) this.app.workspace.trigger("layout-change");
     } catch (error) {
-      console.error("Ebbinghaus Review: failed to reload synced settings", error);
+      console.error(`${this.manifest.name}: failed to reload synced settings`, error);
     }
   }
 
@@ -1013,7 +1012,7 @@ export default class EbbinghausReviewPlugin extends Plugin {
       await action();
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
-      new Notice(`Ebbinghaus Review: ${message}`);
+      new Notice(`${this.manifest.name}: ${message}`);
     }
   }
 }
@@ -1026,7 +1025,7 @@ class EbbinghausReviewSettingTab extends PluginSettingTab {
   display(): void {
     this.containerEl.empty();
     new Setting(this.containerEl)
-      .setName("Ebbinghaus Review")
+      .setName(this.plugin.manifest.name)
       .setHeading();
 
     new Setting(this.containerEl)

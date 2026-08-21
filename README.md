@@ -1,4 +1,4 @@
-# Ebbinghaus Review for Obsidian
+# Note Review Reminder for Obsidian
 
 [English](README.md) · [한국어](README.ko.md)
 
@@ -29,15 +29,21 @@ This plugin applies that idea through spaced repetition. Reviews begin close tog
 - Keep the last card and controls clear of Obsidian's floating mobile navigation.
 - Automatically match Obsidian's interface language across all 46 completed app locales; unknown future locales fall back to English.
 - Follow Obsidian's language by default or choose any supported language in the plugin settings.
-- Find every plugin command by searching for `Ebbinghaus Review` in the command palette, regardless of the selected interface language.
+- Find every plugin command by searching for `Note Review Reminder` in the command palette, regardless of the selected interface language.
 
 ### Screenshots
 
 #### Find commands by plugin name
 
-Open the command palette with `Cmd+P` on macOS or `Ctrl+P` on Windows/Linux, then type `Ebbinghaus Review`. Obsidian groups the localized commands under the plugin name so they remain searchable when you change the plugin interface language.
+Open the command palette with `Cmd+P` on macOS or `Ctrl+P` on Windows/Linux, then type `Note Review Reminder`. Obsidian groups the localized commands under the plugin name so they remain searchable when you change the plugin interface language.
 
-![Search for Ebbinghaus Review commands in the Obsidian command palette](docs/images/en/command-palette.png)
+![Search for Note Review Reminder commands in the Obsidian command palette](docs/images/en/command-palette.png)
+
+#### Review today's notes
+
+See every note due today and complete, postpone, or open each review from one place.
+
+![Review Today dashboard with English note titles](docs/images/en/review-today.png)
 
 #### Current-note review status
 
@@ -45,7 +51,7 @@ Open the command palette with `Cmd+P` on macOS or `Ctrl+P` on Windows/Linux, the
 
 #### Study statistics
 
-![Ebbinghaus Review study statistics in English](docs/images/en/review-statistics.png)
+![Note Review Reminder study statistics in English](docs/images/en/review-statistics.png)
 
 ### Language support
 
@@ -56,7 +62,7 @@ Translations are machine-assisted. Korean has completed a manual editorial revie
 ### Usage
 
 1. Open a Markdown note.
-2. Open the command palette, search for `Ebbinghaus Review`, and run **Ebbinghaus Review: Start or restart the review schedule for the current note**.
+2. Open the command palette, search for `Note Review Reminder`, and run **Note Review Reminder: Start or restart the review schedule for the current note**.
 3. Use the status bar or ribbon icons to open the current-note panel and study dashboard.
 4. Select **Done** after studying, or postpone the review until tomorrow.
 5. Check the **Study statistics** tab for your streak and recent activity.
@@ -72,8 +78,8 @@ npm run check
 
 Run `npm run audit:i18n` to validate all 4,840 localized messages independently.
 
-Copy `main.js`, `manifest.json`, and `styles.css` into a test vault's `.obsidian/plugins/ebbinghaus-review/` directory, then enable **Ebbinghaus Review** under **Settings → Community plugins**.
+Copy `main.js`, `manifest.json`, and `styles.css` into a test vault's `.obsidian/plugins/ebbinghaus-review/` directory, then enable **Note Review Reminder** under **Settings → Community plugins**.
 
 ### License
 
-Ebbinghaus Review is available under the [MIT License](LICENSE).
+Note Review Reminder is available under the [MIT License](LICENSE).

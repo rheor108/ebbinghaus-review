@@ -57,7 +57,10 @@ export class ReviewDashboardView extends ItemView {
 
     const header = content.createDiv({ cls: "ebbinghaus-dashboard-header" });
     const heading = header.createDiv();
-    heading.createEl("div", { cls: "ebbinghaus-status-eyebrow", text: "Ebbinghaus Review" });
+    heading.createEl("div", {
+      cls: "ebbinghaus-status-eyebrow",
+      text: this.plugin.manifest.name,
+    });
     heading.createEl("h2", { text: this.plugin.i18n.t("studyDashboard") });
     heading.createEl("p", { text: this.plugin.i18n.t("dashboardSubtitle") });
 

@@ -8,7 +8,7 @@ test("re-registers a localized command so Obsidian reapplies the plugin prefix",
   const added: Command[] = [];
   const registered = {
     id: "ebbinghaus-review:open-study-dashboard",
-    name: "Ebbinghaus Review: 학습 대시보드 열기",
+    name: "Note Review Reminder: 학습 대시보드 열기",
   } as Command;
   const definition = {
     id: "open-study-dashboard",
@@ -25,7 +25,7 @@ test("re-registers a localized command so Obsidian reapplies the plugin prefix",
       return {
         ...command,
         id: `ebbinghaus-review:${command.id}`,
-        name: `Ebbinghaus Review: ${command.name}`,
+        name: `Note Review Reminder: ${command.name}`,
       };
     },
   );
@@ -34,5 +34,5 @@ test("re-registers a localized command so Obsidian reapplies the plugin prefix",
   assert.equal(added[0]?.id, "open-study-dashboard");
   assert.equal(added[0]?.name, "Open the study dashboard");
   assert.equal(refreshed.id, "ebbinghaus-review:open-study-dashboard");
-  assert.equal(refreshed.name, "Ebbinghaus Review: Open the study dashboard");
+  assert.equal(refreshed.name, "Note Review Reminder: Open the study dashboard");
 });

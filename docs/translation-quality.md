@@ -4,7 +4,7 @@
 
 Last audited: 2026-08-21
 
-Ebbinghaus Review bundles 110 UI messages for each of 44 translated locales. English and British English use the English source dictionary, bringing the total supported Obsidian locales to 46.
+Note Review Reminder bundles 110 UI messages for each of 44 translated locales. English and British English use the English source dictionary, bringing the total supported Obsidian locales to 46.
 
 ## What the audit checks
 
