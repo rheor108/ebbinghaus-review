@@ -114,7 +114,7 @@ export class ReviewStatusView extends ItemView {
     progress.setAttribute("aria-valuemax", String(state.totalStages));
     progress.setAttribute("aria-valuenow", String(state.completedCount));
     const fill = progress.createDiv({ cls: "ebbinghaus-progress-fill" });
-    fill.style.width = `${state.progressPercent}%`;
+    fill.setCssProps({ "--ebbinghaus-progress-width": `${state.progressPercent}%` });
 
     const steps = progressCard.createDiv({ cls: "ebbinghaus-progress-steps" });
     for (let index = 0; index < state.totalStages; index += 1) {

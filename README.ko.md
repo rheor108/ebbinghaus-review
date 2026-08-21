@@ -20,7 +20,7 @@
 
 ### 명령 팔레트에서 플러그인 이름으로 검색
 
-macOS에서는 `Cmd+P`, Windows/Linux에서는 `Ctrl+P`로 명령 팔레트를 연 다음 `Ebbinghaus Review`를 입력하세요. 플러그인 인터페이스 언어를 바꿔도 모든 명령에는 검색하기 쉬운 `Ebbinghaus Review:` 접두사가 유지됩니다.
+macOS에서는 `Cmd+P`, Windows/Linux에서는 `Ctrl+P`로 명령 팔레트를 연 다음 `Ebbinghaus Review`를 입력하세요. Obsidian이 번역된 명령을 플러그인 이름 아래에 표시하므로 플러그인 인터페이스 언어를 바꿔도 같은 이름으로 검색할 수 있습니다.
 
 ![Obsidian 명령 팔레트에서 Ebbinghaus Review 명령 검색](docs/images/ko/command-palette.png)
 
@@ -57,7 +57,7 @@ macOS에서는 `Cmd+P`, Windows/Linux에서는 `Ctrl+P`로 명령 팔레트를 �
 - 모바일 하단 내비게이션에 마지막 카드와 조작 버튼이 가리지 않도록 안전 여백 적용
 - Obsidian에서 앱 번역이 완료된 46개 언어를 자동 감지하고, 알 수 없는 새 언어는 영어로 표시
 - 플러그인 설정에서 Obsidian 언어 자동 추종 또는 지원 언어 직접 선택
-- 선택한 언어와 관계없이 명령 팔레트에서 `Ebbinghaus Review` 접두사로 모든 명령 검색
+- 선택한 언어와 관계없이 명령 팔레트에서 `Ebbinghaus Review`로 모든 명령 검색
 
 번역은 기계 번역을 보조적으로 사용했습니다. 한국어는 수동 문장 검수를 완료했으며, 나머지 언어는 전체 구조 검사와 주요 용어 교정을 마쳤지만 원어민 검수가 더 필요합니다. 자세한 상태는 [번역 품질 및 검수 현황](docs/translation-quality.md)에서 확인할 수 있습니다.
 
@@ -97,7 +97,7 @@ Obsidian의 **Settings → Community plugins**에서 `Ebbinghaus Review`를 켭�
 
 ## 명령
 
-모든 명령은 플러그인 언어 설정과 관계없이 `Ebbinghaus Review:` 접두사로 표시되므로, 명령 팔레트에서 플러그인 이름만 입력해도 한 번에 찾을 수 있습니다.
+Obsidian이 모든 명령을 `Ebbinghaus Review` 플러그인 아래에 표시하므로, 플러그인 언어 설정과 관계없이 명령 팔레트에서 플러그인 이름으로 찾을 수 있습니다.
 
 - `현재 노트 복습 일정 시작 또는 재시작`
 - `현재 노트를 복습 완료로 기록`
@@ -115,3 +115,7 @@ Obsidian의 **Settings → Community plugins**에서 `Ebbinghaus Review`를 켭�
 - 하루에 한 번 알림을 표시합니다.
 - 시작 시 알림을 켜면 설정된 시각 전이라도 앱 실행 후 오늘 복습을 알려줍니다.
 - 운영체제 알림은 설정에서 직접 켜고 권한을 허용해야 합니다.
+
+## 라이선스
+
+Ebbinghaus Review는 [MIT 라이선스](LICENSE)로 배포됩니다.

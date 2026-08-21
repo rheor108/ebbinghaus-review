@@ -54,7 +54,7 @@ import {
 } from "./i18n";
 import type { MessageKey } from "./messages";
 import { settingsFingerprint } from "./settings-sync";
-import { pluginCommandName } from "./command-label";
+import { reregisterCommand } from "./localized-command";
 
 interface EbbinghausReviewSettings {
   language: LocalePreference;
@@ -179,7 +179,11 @@ export default class EbbinghausReviewPlugin extends Plugin {
   private dueRibbonIcon: HTMLElement | null = null;
   private statusRibbonIcon: HTMLElement | null = null;
   private settingTab: EbbinghausReviewSettingTab | null = null;
-  private readonly localizedCommands: Array<{ command: Command; key: MessageKey }> = [];
+  private readonly localizedCommands: Array<{
+    definition: Omit<Command, "name">;
+    key: MessageKey;
+    registered: Command;
+  }> = [];
   private checkIntervalId: number | null = null;
   private settingsSyncIntervalId: number | null = null;
   private knownSettingsFingerprint = "";
@@ -289,7 +293,7 @@ export default class EbbinghausReviewPlugin extends Plugin {
 
   private addLocalizedCommand(key: MessageKey, command: Omit<Command, "name">): void {
     const registered = this.addCommand({ ...command, name: this.i18n.t(key) });
-    this.localizedCommands.push({ command: registered, key });
+    this.localizedCommands.push({ definition: command, key, registered });
   }
 
   private applyConfiguredLanguage(): void {
@@ -304,8 +308,14 @@ export default class EbbinghausReviewPlugin extends Plugin {
     this.noteStatusBar?.setAttribute("aria-label", this.i18n.t("openStatusA11y"));
     this.dueRibbonIcon?.setAttribute("aria-label", this.i18n.t("todayReviewList"));
     this.statusRibbonIcon?.setAttribute("aria-label", this.i18n.t("currentReviewStatus"));
-    for (const { command, key } of this.localizedCommands) {
-      command.name = pluginCommandName(this.manifest.name, this.i18n.t(key));
+    for (const localized of this.localizedCommands) {
+      localized.registered = reregisterCommand(
+        localized.registered,
+        localized.definition,
+        this.i18n.t(localized.key),
+        (commandId) => this.removeCommand(commandId),
+        (command) => this.addCommand(command),
+      );
     }
   }
 
@@ -1015,7 +1025,9 @@ class EbbinghausReviewSettingTab extends PluginSettingTab {
 
   display(): void {
     this.containerEl.empty();
-    this.containerEl.createEl("h2", { text: "Ebbinghaus Review" });
+    new Setting(this.containerEl)
+      .setName("Ebbinghaus Review")
+      .setHeading();
 
     new Setting(this.containerEl)
       .setName(this.plugin.i18n.t("languageSetting"))

@@ -220,7 +220,11 @@ export class ReviewDashboardView extends ItemView {
       value.addClass("ebbinghaus-activity-value");
       const track = column.createDiv({ cls: "ebbinghaus-activity-track" });
       const bar = track.createDiv({ cls: day.count > 0 ? "is-active" : "" });
-      bar.style.height = `${day.count === 0 ? 4 : Math.max(18, (day.count / maxCount) * 100)}%`;
+      bar.setCssProps({
+        "--ebbinghaus-activity-height": `${day.count === 0
+          ? 4
+          : Math.max(18, (day.count / maxCount) * 100)}%`,
+      });
       column.createEl("small", { text: weekdayLabel(this.plugin.i18n, day.date) });
     }
 

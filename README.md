@@ -29,13 +29,13 @@ This plugin applies that idea through spaced repetition. Reviews begin close tog
 - Keep the last card and controls clear of Obsidian's floating mobile navigation.
 - Automatically match Obsidian's interface language across all 46 completed app locales; unknown future locales fall back to English.
 - Follow Obsidian's language by default or choose any supported language in the plugin settings.
-- Find every plugin command by searching for the stable `Ebbinghaus Review` prefix in the command palette, regardless of the selected interface language.
+- Find every plugin command by searching for `Ebbinghaus Review` in the command palette, regardless of the selected interface language.
 
 ### Screenshots
 
 #### Find commands by plugin name
 
-Open the command palette with `Cmd+P` on macOS or `Ctrl+P` on Windows/Linux, then type `Ebbinghaus Review`. Every plugin command keeps the `Ebbinghaus Review:` prefix even when you change the plugin interface language.
+Open the command palette with `Cmd+P` on macOS or `Ctrl+P` on Windows/Linux, then type `Ebbinghaus Review`. Obsidian groups the localized commands under the plugin name so they remain searchable when you change the plugin interface language.
 
 ![Search for Ebbinghaus Review commands in the Obsidian command palette](docs/images/en/command-palette.png)
 
@@ -73,3 +73,7 @@ npm run check
 Run `npm run audit:i18n` to validate all 4,840 localized messages independently.
 
 Copy `main.js`, `manifest.json`, and `styles.css` into a test vault's `.obsidian/plugins/ebbinghaus-review/` directory, then enable **Ebbinghaus Review** under **Settings → Community plugins**.
+
+### License
+
+Ebbinghaus Review is available under the [MIT License](LICENSE).
