@@ -688,8 +688,7 @@ export default class EbbinghausReviewPlugin extends Plugin {
 
   async activateDashboard(tab: DashboardTab): Promise<void> {
     let leaf: WorkspaceLeaf | undefined = this.app.workspace
-      .getLeavesOfType(REVIEW_DASHBOARD_VIEW_TYPE)
-      .at(0);
+      .getLeavesOfType(REVIEW_DASHBOARD_VIEW_TYPE)[0];
     if (!leaf) {
       leaf = this.app.workspace.getLeaf("tab");
       await leaf.setViewState({ type: REVIEW_DASHBOARD_VIEW_TYPE, active: true });
@@ -707,8 +706,7 @@ export default class EbbinghausReviewPlugin extends Plugin {
     this.restoringStatusView = true;
     try {
       let leaf: WorkspaceLeaf | undefined = this.app.workspace
-        .getLeavesOfType(REVIEW_STATUS_VIEW_TYPE)
-        .at(0);
+        .getLeavesOfType(REVIEW_STATUS_VIEW_TYPE)[0];
       if (!leaf) {
         leaf = this.app.workspace.getRightLeaf(false) ?? undefined;
         if (!leaf) {

@@ -629,8 +629,8 @@ body.is-phone.auto-full-screen .workspace-leaf-content .view-content.ebbinghaus-
   gap: var(--size-4-2);
 }
 
-.ebbinghaus-review-invalid {
-  border-color: var(--text-error) !important;
+.setting-item-control input.ebbinghaus-review-invalid {
+  border-color: var(--text-error);
 }
 
 @media (max-width: 600px) {
