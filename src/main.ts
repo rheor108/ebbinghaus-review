@@ -54,6 +54,7 @@ import {
   settingsFingerprint,
 } from "./settings-sync";
 import { reregisterCommand } from "./localized-command";
+import { keepSingleWorkspaceLeaf } from "./workspace-leaves";
 
 interface EbbinghausReviewSettings {
   language: LocalePreference;
@@ -284,13 +285,10 @@ export default class EbbinghausReviewPlugin extends Plugin {
       void this.handleRenamedPath(oldPath, file.path)));
     this.registerEvent(this.app.workspace.on("active-leaf-change", () => void this.refreshStatus()));
     this.registerEvent(this.app.workspace.on("layout-change", () => {
-      if (
-        !this.isUnloading &&
-        this.settings.keepStatusPanelOpen &&
-        this.app.workspace.getLeavesOfType(REVIEW_STATUS_VIEW_TYPE).length === 0
-      ) {
-        void this.ensureStatusView(true);
-      }
+      if (this.isUnloading || !this.settings.keepStatusPanelOpen) return;
+      const statusLeaves = this.app.workspace.getLeavesOfType(REVIEW_STATUS_VIEW_TYPE);
+      if (statusLeaves.length === 0) void this.ensureStatusView(true);
+      else if (statusLeaves.length > 1) void this.ensureStatusView(false);
     }));
   }
 
@@ -692,8 +690,13 @@ export default class EbbinghausReviewPlugin extends Plugin {
     if (this.isUnloading || this.restoringStatusView) return;
     this.restoringStatusView = true;
     try {
-      let leaf: WorkspaceLeaf | undefined = this.app.workspace
-        .getLeavesOfType(REVIEW_STATUS_VIEW_TYPE)[0];
+      const statusLeaves = this.app.workspace.getLeavesOfType(REVIEW_STATUS_VIEW_TYPE);
+      const activeStatusLeaf = this.app.workspace
+        .getActiveViewOfType(ReviewStatusView)?.leaf;
+      let leaf: WorkspaceLeaf | undefined = keepSingleWorkspaceLeaf(
+        statusLeaves,
+        activeStatusLeaf,
+      );
       if (!leaf) {
         leaf = this.app.workspace.getRightLeaf(false) ?? undefined;
         if (!leaf) {
