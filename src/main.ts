@@ -55,6 +55,7 @@ import {
 } from "./settings-sync";
 import { reregisterCommand } from "./localized-command";
 import { keepSingleWorkspaceLeaf } from "./workspace-leaves";
+import { ActiveMarkdownPathTracker } from "./active-markdown-path";
 
 interface EbbinghausReviewSettings {
   language: LocalePreference;
@@ -185,10 +186,12 @@ export default class EbbinghausReviewPlugin extends Plugin {
   private restoringStatusView = false;
   private isUnloading = false;
   private manualRefreshGeneration = 0;
+  private readonly activeMarkdownPathTracker = new ActiveMarkdownPathTracker();
 
   async onload(): Promise<void> {
     await this.loadSettings();
     this.applyConfiguredLanguage();
+    this.activeMarkdownPathTracker.synchronize(this.getActiveMarkdownFile()?.path ?? null);
 
     this.registerView(
       REVIEW_STATUS_VIEW_TYPE,
@@ -283,7 +286,11 @@ export default class EbbinghausReviewPlugin extends Plugin {
     this.registerEvent(this.app.vault.on("delete", (file) => void this.handleDeletedPath(file.path)));
     this.registerEvent(this.app.vault.on("rename", (file, oldPath) =>
       void this.handleRenamedPath(oldPath, file.path)));
-    this.registerEvent(this.app.workspace.on("active-leaf-change", () => void this.refreshStatus()));
+    this.registerEvent(this.app.workspace.on("active-leaf-change", () => {
+      const activeMarkdownPath = this.getActiveMarkdownFile()?.path ?? null;
+      if (!this.activeMarkdownPathTracker.shouldRefresh(activeMarkdownPath)) return;
+      void this.refreshStatus();
+    }));
     this.registerEvent(this.app.workspace.on("layout-change", () => {
       if (this.isUnloading || !this.settings.keepStatusPanelOpen) return;
       const statusLeaves = this.app.workspace.getLeavesOfType(REVIEW_STATUS_VIEW_TYPE);
@@ -629,6 +636,7 @@ export default class EbbinghausReviewPlugin extends Plugin {
     }));
 
     const file = this.getActiveMarkdownFile();
+    this.activeMarkdownPathTracker.synchronize(file?.path ?? null);
     if (!file) {
       this.noteStatusBar?.setText(this.i18n.t("noNoteStatusBar"));
     } else {
